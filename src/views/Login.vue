@@ -59,6 +59,17 @@ import router from '../router'
         components: {
             PageFooter
         },
+        computed: {
+            getToken() {
+                return cookies.get('sessionToken') 
+            },
+        },
+        //if token exists, redirect to home
+        beforeMount() {
+            if (this.getToken != undefined) {
+                router.push('/home');
+            }
+        },
         data() {
             return  {
                 email: '',
@@ -114,9 +125,9 @@ import router from '../router'
 
     #loginPage {
         width: 100%;
-        height: 100%;
+        height: 100vh;
         display: grid;
-        grid-template-rows: 20vh 10vh 60vh;
+        grid-template-rows: 20vh 10vh 55vh 15vh;
         align-items: center;
         justify-items: center;
         background-color: #52ab98;
@@ -173,7 +184,8 @@ import router from '../router'
         }
 
         #footer {
-            height: 10vh;
+            grid-row: 4;
+            height: 15vh;
         }
     }
 
