@@ -121,11 +121,17 @@ import axios from 'axios'
             #curUser {
                 grid-row: 2;
                 text-align: center;
+                display: grid;
+                align-items: center;
 
                 h3 {
                     cursor: pointer;
                     color: #f5fffd; 
                 }
+            }
+
+            #curUser:hover {
+                background-color: #45a18d;
             }
 
             #menuItems {
@@ -152,8 +158,8 @@ import axios from 'axios'
                     }
                 }
 
-                #listitem:hover {
-                    background-color: rgb(4, 27, 22);
+                #listItem:hover {
+                    background-color: #45a18d;
                 }
             }
         }

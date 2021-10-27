@@ -160,7 +160,6 @@ import router from '../router'
             margin-right: 2vw;
 
             h5 {
-                cursor: pointer;
                 color: #f5fffd;
                 font-size: 1em;
             }
