@@ -102,6 +102,7 @@ import router from '../router'
                 }).then((response) => {
                     cookies.set('sessionToken', response.data.sessionToken)
                     cookies.set('userId', response.data.userId)
+                    this.$store.commit('userData', response.data);
                     router.push('/home')
                 }).catch((error) => {
                     console.log(error.response.data);
@@ -189,7 +190,7 @@ import router from '../router'
         }
     }
 
-    @media screen and (min-width: 768px) {
+    @media screen and (min-width: 700px) {
         #loginPage {
 
             #slogan {
@@ -206,14 +207,9 @@ import router from '../router'
         }
     }
 
-    @media screen and (min-width: 900px) {
-        #loginPage {
-            background-color: #f5fffd;
-        }
-    }
-
     @media screen and (min-width: 1100px) {
         #loginPage {
+            background-color: #f5fffd;
 
             #slogan {
 

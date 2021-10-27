@@ -50,7 +50,7 @@
         }
     }
 
-    @media screen and (min-width: 900px) {
+    @media screen and (min-width: 1100px) {
         #footer {
             background-color: #f5fffd;
         }

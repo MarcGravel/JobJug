@@ -1,13 +1,15 @@
 <template>
-    <div id="navBar">
-        <div id="hamburger">
-            <v-icon id="icon" @click="openDrawer">{{hambIcon}}</v-icon>
-        </div>
-        <div id="name">
-            <h2>JobJug</h2>
-        </div>
-        <div id="curUser">
-            <h5>{{user}}</h5>
+    <div>
+        <div id="navBar">
+            <div id="hamburger">
+                <v-icon id="icon" @click="openDrawer">{{hambIcon}}</v-icon>
+            </div>
+            <div id="name">
+                <h2>JobJug</h2>
+            </div>
+            <div id="curUser">
+                <h5>{{user.name}}</h5>
+            </div>
         </div>
 
         <v-navigation-drawer
@@ -46,10 +48,17 @@ import router from '../router'
 
     export default {
         name: "NavBar",
+        beforeMount() {
+            if (this.$store.state.userInfo != undefined) {
+                this.user = this.$store.state.userInfo;
+            } else {
+                this.loadUserData();
+            }
+        },
         data() {
             return {
                 hambIcon: "menu",
-                user: 'need usr api call',
+                user: '',
                 navDrawer: null,
                 items: [
                     { title: 'Schedule', icon: 'event_note', route: '/home', color: '#57bba5' },
@@ -61,6 +70,25 @@ import router from '../router'
             }
         },
         methods: {
+            loadUserData() {
+                let token = cookies.get("sessionToken");
+                let userId = cookies.get("userId");
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/users',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'sessionToken': token
+                    },
+                    params: {
+                        'userId': userId
+                    }
+                }).then((response) => {
+                    this.user = response.data[0]
+                }).catch((error) => {
+                    console.log(error + ' error');
+                })
+            },
             openDrawer() {
                 this.navDrawer = !this.navDrawer;
             },
@@ -92,18 +120,21 @@ import router from '../router'
 @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
 
     #navBar {
+        position: fixed;
         width: 100vw;
         height: 56px;
         background: rgb(82,171,152);
         background: linear-gradient(180deg, rgba(82,171,152,1) 0%, rgba(141,208,193,1) 49%, rgba(197,235,227,1) 100%);
         box-shadow: 0 3px 15px -5px black;
         display: grid;
-        grid-template-columns: 20% 40% 40%;
+        grid-template-columns: 20% 45% 35%;
         align-items: center;
+        overflow: hidden;
 
         #hamburger {
-            grid-column: 1;
-            justify-self: center;
+            position: fixed;
+            margin-left: 20px;
+            z-index: 99;
             cursor: pointer;
 
             #icon {
@@ -112,10 +143,11 @@ import router from '../router'
         }
 
         #name {
-            grid-column: 2;
-            justify-self: end;
+            position: fixed;
+            width: 100vw;
 
             h2 {
+                text-align: center;
                 font-family: 'Righteous', cursive;
                 color: #2b6777;
             }
@@ -128,11 +160,16 @@ import router from '../router'
             margin-right: 2vw;
 
             h5 {
-                color: #2b6777;
+                cursor: pointer;
+                color: #f5fffd;
+                font-size: 1em;
             }
         }
+    }
 
-        #navDrawer {
+    #navDrawer {
+        position: fixed;
+
             #listItem {
 
                 #buttons {
@@ -141,6 +178,42 @@ import router from '../router'
                     width: 100%;
                 }
             }
+        }
+
+    @media screen and (min-width: 700px) {
+        #navBar {
+            height: 68px;
+
+            #hamburger {
+
+                #icon {
+                    font-size: 50px;
+                }
+            }
+
+            #name {
+
+                h2 {
+                    font-size: 2.2em;
+                }
+            }
+
+            #curUser {
+
+                h5 {
+                    font-size: 1.5em;
+                }
+            }
+        }
+    }
+
+    @media screen and (min-width: 1100px) {
+        #navBar {
+            display: none;
+        }
+
+        #navDrawer {
+            display: none;
         }
     }
 </style>

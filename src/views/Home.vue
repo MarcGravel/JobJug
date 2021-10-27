@@ -3,7 +3,12 @@
         <div id="navBar">
             <NavBar />
         </div>
-        <h1>Home Page</h1>
+        <div id="asideBar">
+            <AsideBar />
+        </div>
+        <div id="homeContainer">
+            <h1>Home Page</h1>
+        </div>
     </div>
 </template>
 
@@ -11,11 +16,13 @@
 import router from '../router'
 import cookies from 'vue-cookies'
 import NavBar from '../components/NavBar.vue'
+import AsideBar from '../components/AsideBar.vue'
 
     export default {
         name: "Home",
         components: {
-            NavBar
+            NavBar,
+            AsideBar
         },
         computed: {
             getToken() {
@@ -34,7 +41,39 @@ import NavBar from '../components/NavBar.vue'
 <style lang="scss" scoped>
     #homePage {
         width: 100vw;
-        height: 100vh;
+        min-height: 100vh;
+        height: fit-content;
         background-color: #f5fffd;
+
+        #homeContainer {
+            margin-top: 56px
+        }
+    }
+
+    @media screen and (min-width: 700px) { 
+        #homePage {
+
+            #homeContainer {
+                margin-top: 68px
+            }
+        }
+    }
+
+    @media screen and (min-width: 1100px) { 
+        #homePage {
+            display: grid;
+            grid-template-columns: 10% 90%;
+
+            #asideBar {
+                grid-column: 1;
+                position: fixed;
+                width: 10%;
+            }
+
+            #homeContainer {
+                grid-column: 2;
+                margin-top: 0;
+            }
+        }
     }
 </style>
