@@ -1,16 +1,16 @@
 <template>
-    <div id="homePage">
+    <div id="jobsPage">
         <div id="navBar">
             <NavBar />
         </div>
         <div id="asideBar">
             <AsideBar />
         </div>
-        <div id="homeContainer">
+        <div id="jobsContainer">
             <div id="toolBar">
                 <Toolbar />
             </div>
-            <h1>Home Page</h1>
+            <h1>Jobs Page</h1>
         </div>
     </div>
 </template>
@@ -23,7 +23,7 @@ import AsideBar from '../components/AsideBar.vue'
 import Toolbar from '../components/Toolbar.vue'
 
     export default {
-        name: "Home",
+        name: "Jobs",
         components: {
             NavBar,
             AsideBar,
@@ -44,28 +44,28 @@ import Toolbar from '../components/Toolbar.vue'
 </script>
 
 <style lang="scss" scoped>
-    #homePage {
+    #jobsPage {
         width: 100vw;
         min-height: 100%;
         height: fit-content;
         background-color: #f5fffd;
 
-        #homeContainer {
+        #jobsContainer {
             margin-top: 56px
         }
     }
 
     @media screen and (min-width: 700px) { 
-        #homePage {
+        #jobsPage {
 
-            #homeContainer {
+            #jobsContainer {
                 margin-top: 68px
             }
         }
     }
 
     @media screen and (min-width: 1100px) { 
-        #homePage {
+        #jobsPage {
             display: grid;
             grid-template-columns: 10% 90%;
 
@@ -75,7 +75,7 @@ import Toolbar from '../components/Toolbar.vue'
                 width: 10%;
             }
 
-            #homeContainer {
+            #jobsContainer {
                 grid-column: 2;
                 margin-top: 0;
             }
