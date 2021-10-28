@@ -29,18 +29,11 @@ import axios from 'axios'
 
     export default {
         name: "AsideBar",
-        beforeMount() {
-            if (this.$store.state.userInfo != undefined) {
-                this.user = this.$store.state.userInfo;
-            } else {
-                this.loadUserData();
-            }
-        },
+        props: ["user"],
         data() {
             return {
-                user: '',
                 items: [
-                    { title: 'Schedule', icon: 'event_note', route: '/home' },
+                    { title: 'Schedule', icon: 'event_note', route: '/schedule' },
                     { title: 'Job Lookup', icon: 'construction', route: '/jobs' },
                     { title: 'Employees', icon: 'badge', route: '/users' },
                     { title: 'Clients', icon: 'people', route: '/clients' },
@@ -49,25 +42,6 @@ import axios from 'axios'
             }
         },
         methods: {
-            loadUserData() {
-                let token = cookies.get("sessionToken");
-                let userId = cookies.get("userId");
-                axios.request({
-                    url: process.env.VUE_APP_API_SITE+'/api/users',
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'sessionToken': token
-                    },
-                    params: {
-                        'userId': userId
-                    }
-                }).then((response) => {
-                    this.user = response.data[0]
-                }).catch((error) => {
-                    console.log(error + ' error');
-                })
-            },
             redirectLogout(title) {
                 if (title == "Log Out") {
                     axios.request({

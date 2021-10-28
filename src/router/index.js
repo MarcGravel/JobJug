@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
-import Home from '../views/Home.vue'
+import Schedule from '../views/Schedule.vue'
 import Jobs from '../views/Jobs.vue'
 
 Vue.use(VueRouter)
@@ -13,13 +13,14 @@ const routes = [
     component: Login
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: Home
+    path: '/schedule',
+    name: 'Schedule',
+    component: Schedule
   },
   {
-    path: '/jobs',
+    path: '/jobs/:jobId',
     name: 'Jobs',
+    props: true,
     component: Jobs
   },
   

@@ -48,20 +48,13 @@ import router from '../router'
 
     export default {
         name: "NavBar",
-        beforeMount() {
-            if (this.$store.state.userInfo != undefined) {
-                this.user = this.$store.state.userInfo;
-            } else {
-                this.loadUserData();
-            }
-        },
+        props: ["user"],
         data() {
             return {
                 hambIcon: "menu",
-                user: '',
                 navDrawer: null,
                 items: [
-                    { title: 'Schedule', icon: 'event_note', route: '/home', color: '#57bba5' },
+                    { title: 'Schedule', icon: 'event_note', route: '/schedule', color: '#57bba5' },
                     { title: 'Job Lookup', icon: 'construction', route: '/jobs', color: '#57bba5' },
                     { title: 'Employees', icon: 'badge', route: '/users', color: '#57bba5'},
                     { title: 'Clients', icon: 'people', route: '/clients', color: '#57bba5'},
@@ -70,25 +63,6 @@ import router from '../router'
             }
         },
         methods: {
-            loadUserData() {
-                let token = cookies.get("sessionToken");
-                let userId = cookies.get("userId");
-                axios.request({
-                    url: process.env.VUE_APP_API_SITE+'/api/users',
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'sessionToken': token
-                    },
-                    params: {
-                        'userId': userId
-                    }
-                }).then((response) => {
-                    this.user = response.data[0]
-                }).catch((error) => {
-                    console.log(error + ' error');
-                })
-            },
             openDrawer() {
                 this.navDrawer = !this.navDrawer;
             },

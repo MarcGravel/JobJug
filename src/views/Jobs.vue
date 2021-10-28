@@ -1,21 +1,22 @@
 <template>
     <div id="jobsPage">
         <div id="navBar">
-            <NavBar />
+            <NavBar :user="user" />
         </div>
         <div id="asideBar">
-            <AsideBar />
+            <AsideBar :user="user" />
+        </div>
+        <div id="toolBar">
+            <Toolbar :user="user" />
         </div>
         <div id="jobsContainer">
-            <div id="toolBar">
-                <Toolbar />
-            </div>
             <h1>Jobs Page</h1>
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
 import router from '../router'
 import cookies from 'vue-cookies'
 import NavBar from '../components/NavBar.vue'
@@ -24,6 +25,7 @@ import Toolbar from '../components/Toolbar.vue'
 
     export default {
         name: "Jobs",
+        props:["jobId"],
         components: {
             NavBar,
             AsideBar,
@@ -39,7 +41,37 @@ import Toolbar from '../components/Toolbar.vue'
             if (this.getToken == undefined) {
                 router.push('/');
             }
+            else {
+                this.loadUserData();
+            }
+
         },
+        data() {
+            return {
+                user: '',
+            }
+        },
+        methods: {
+            loadUserData() {
+                let token = cookies.get("sessionToken");
+                let userId = cookies.get("userId");
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/users',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'sessionToken': token
+                    },
+                    params: {
+                        'userId': userId
+                    }
+                }).then((response) => {
+                    this.user = response.data[0]
+                }).catch((error) => {
+                    console.log(error + ' error');
+                })
+            },
+        }
     }
 </script>
 
@@ -51,7 +83,7 @@ import Toolbar from '../components/Toolbar.vue'
         background-color: #f5fffd;
 
         #jobsContainer {
-            margin-top: 56px
+            margin-top: 140px
         }
     }
 
@@ -59,7 +91,7 @@ import Toolbar from '../components/Toolbar.vue'
         #jobsPage {
 
             #jobsContainer {
-                margin-top: 68px
+                margin-top: 152px;
             }
         }
     }

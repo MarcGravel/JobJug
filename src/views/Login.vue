@@ -67,7 +67,7 @@ import router from '../router'
         //if token exists, redirect to home
         beforeMount() {
             if (this.getToken != undefined) {
-                router.push('/home');
+                router.push('/schedule');
             }
         },
         data() {
@@ -103,7 +103,7 @@ import router from '../router'
                     cookies.set('sessionToken', response.data.sessionToken)
                     cookies.set('userId', response.data.userId)
                     this.$store.commit('userData', response.data);
-                    router.push('/home')
+                    router.push('/schedule')
                 }).catch((error) => {
                     console.log(error.response.data);
                     document.getElementById('errorLogin').style.display = "block";
