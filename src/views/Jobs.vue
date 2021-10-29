@@ -32,43 +32,56 @@ import Toolbar from '../components/Toolbar.vue'
             Toolbar
         },
         computed: {
-            getToken() {
-                return cookies.get('sessionToken') 
+            sessionCookie() {
+                return cookies.get('session') 
             },
         },
         //if token not valid, redirect to login
         beforeMount() {
-            if (this.getToken == undefined) {
+            if (this.sessionCookie == undefined) {
                 router.push('/');
             }
             else {
-                this.loadUserData();
+                if (this.sessionCookie.token == undefined) {
+                    router.push('/');
+                }
+                else {
+                    this.token = this.sessionCookie.token;
+                    this.userId = this.sessionCookie.userId;
+
+                    if (this.$store.state.userInfo != undefined) {
+                        this.user = this.$store.state.userInfo;
+                    } else {
+                        this.loadUserData();
+                    }
+                }
             }
 
         },
         data() {
             return {
-                user: '',
+                user: undefined,
+                token: undefined,
+                userId: undefined,
             }
         },
         methods: {
             loadUserData() {
-                let token = cookies.get("sessionToken");
-                let userId = cookies.get("userId");
                 axios.request({
                     url: process.env.VUE_APP_API_SITE+'/api/users',
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'sessionToken': token
+                        'sessionToken': this.token
                     },
                     params: {
-                        'userId': userId
+                        'userId': this.userId
                     }
                 }).then((response) => {
                     this.user = response.data[0]
+                    this.$store.commit('userData', response.data[0]);
                 }).catch((error) => {
-                    console.log(error + ' error');
+                    console.log(error.response);
                 })
             },
         }

@@ -23,6 +23,11 @@ const routes = [
     props: true,
     component: Jobs
   },
+  {
+    path: '/jobs/',
+    name: 'Jobs',
+    component: Jobs
+  },
   
 ]
 

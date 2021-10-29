@@ -100,8 +100,10 @@ import router from '../router'
                         'password': this.password
                     }
                 }).then((response) => {
-                    cookies.set('sessionToken', response.data.sessionToken)
-                    cookies.set('userId', response.data.userId)
+                    let token = response.data.sessionToken;
+                    let userId = response.data.userId;
+                    let cookie = {token, userId};
+                    cookies.set('session', cookie)
                     this.$store.commit('userData', response.data);
                     router.push('/schedule')
                 }).catch((error) => {

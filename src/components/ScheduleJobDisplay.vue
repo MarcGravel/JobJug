@@ -4,7 +4,8 @@
             id="container"
             elevation="8"
             >
-            <v-card-title id="title" v-if="job.title.length > 18 ">{{job.title.substring(0,18)}}...</v-card-title>
+            <!--if title length is too long, limit and add ellipses to avoid title wrapping and/or overflowing-->
+            <v-card-title id="title" v-if="job.title.length > 18 ">{{job.title.substring(0,16)}}...</v-card-title>
             <v-card-title id="title" v-else>{{job.title}}</v-card-title>
             <v-btn id="viewJob" @click="navDynaJobPage">View Job</v-btn>
             <v-card-subtitle id="schedDate">Job Date: {{job.scheduledDate}}</v-card-subtitle>
@@ -13,7 +14,7 @@
                 <v-card-subtitle id="statusTag">Status: </v-card-subtitle>
                 <h5 id="activeJob" v-if="job.jobStatus == 'active' ">Active</h5>
                 <h5 id="completedJob" v-if="job.jobStatus == 'completed' ">Complete</h5>
-                <h5 id="archiveJob" v-if="job.jobStatus == 'archived' ">Archived</h5>
+                <h5 id="archivedJob" v-if="job.jobStatus == 'archived' ">Archived</h5>
             </div>
         </v-card>
     </div>

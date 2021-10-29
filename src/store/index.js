@@ -17,18 +17,17 @@ export default new Vuex.Store({
   },
   actions: {
     getUserInfo() {
-      let token = cookies.get("sessionToken")
-      let userId = cookies.get("userId")
+      let session = cookies.get('session') 
 
       axios.request({
         url: process.env.VUE_APP_API_SITE+'/api/users',
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'sessionToken': token
+            'sessionToken': session.token
         },
         params: {
-            'userId': userId
+            'userId': session.userId
         }
     }).then((response) => {
       return this.commit('userData', response.data[0]);
