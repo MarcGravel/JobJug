@@ -82,7 +82,7 @@
                     width: fit-content;
                     padding: 3px 6px 3px 6px;
                     color: whitesmoke;
-                    border-radius: 10px;
+                    border-radius: 20px;
                 }
 
                 #activeJob {

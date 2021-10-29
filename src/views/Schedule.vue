@@ -231,7 +231,7 @@ import ScheduleJobDisplay from '../components/ScheduleJobDisplay.vue'
                         'jobStatus': 'archived'
                     }
                 }).then((response) => {
-                    this.archivedJobs = response.data
+                    this.archivedJobs = response.data;
                 }).catch((error) => {
                     console.log(error.response);
                 })

@@ -9,11 +9,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     userInfo: undefined,
+    archivedjobs: [],
   },
   mutations: {
     userData (state, info) {
       state.userInfo = info;
-    } 
+    },
   },
   actions: {
     getUserInfo() {
@@ -29,13 +30,14 @@ export default new Vuex.Store({
         params: {
             'userId': session.userId
         }
-    }).then((response) => {
-      return this.commit('userData', response.data[0]);
-    }).catch((error) => {
-        console.log(error.response.data);
-    })
-    }
+      }).then((response) => {
+        return this.commit('userData', response.data[0]);
+      }).catch((error) => {
+          console.log(error.response.data);
+      })
+    },
   },
+  
   modules: {
   }
 })

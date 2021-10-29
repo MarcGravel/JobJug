@@ -14,11 +14,8 @@
                         id="sortBtn"
                         v-bind="attrs"
                         v-on="on"
-                        width="100%"
-                        height= "100%"
-                        color="#52ab98"
                         >
-                        Sort {{sortType}}
+                        Sort options
                         </v-btn>
                     </template>
 
@@ -34,13 +31,12 @@
                     </v-list>
                     </v-menu>
             </div>
-            <h4 id="toolViewTitle">View {{sortType}} by:</h4>
+            <div id="desktopDividerCSS"></div>
+            <h4 id="toolViewTitle">Filter {{sortType}} by:</h4>
             <!--If on schedule view, show this-->
             <div id="jobStatusContainer" v-if="view == 'schedule'">
                 <v-btn
                     id="activeBtn"
-                    width="90%"
-                    height= "60%"
                     color="#24a0ed"
                     @click="emitActiveFilter"
                     >
@@ -48,8 +44,6 @@
                 </v-btn>
                 <v-btn
                     id="completedBtn"
-                    width="90%"
-                    height= "60%"
                     color="#4AC948"
                     @click="emitCompletedFilter"
                     >
@@ -58,8 +52,6 @@
                 <v-btn
                     v-if="user.authLevel == 'manager' || user.authLevel == 'admin'"
                     id="archivedBtn"
-                    width="90%"
-                    height= "60%"
                     color="#ff3333"
                     @click="emitArchivedFilter"
                     >
@@ -129,6 +121,19 @@
             background-color: #f5fffd;
             border-radius: 10px;
             margin-top: 1vh;
+            margin-left: 1vw;
+
+            #sortBtn {
+                font-size: 1.2em;
+                width: 100%;
+                height: 100%;
+                background-color: #63b9a7;
+                color: rgb(255, 255, 255);
+            }
+        }
+
+        #desktopDividerCSS {
+            display: none;
         }
 
         #jobStatusContainer {
@@ -140,6 +145,12 @@
             grid-template-columns: 33% 33% 33%;
             align-items: center;
             justify-items: center;
+
+            #activeBtn, #completedBtn, #archivedBtn {
+                width: 90%;
+                height: 60%;
+                color: whitesmoke;
+            }
         }
 
         #toolViewTitle {
@@ -160,16 +171,78 @@
         }
     }
 
+    @media screen and (max-width: 550px) {
+        #toolBar {
+            #sortByContainer {
+                #sortBtn {
+                    font-size: 0.7em;
+                }
+            }
+        }
+    }
+
     @media screen and (min-width: 700px) {
         #toolBar {
             margin-top: 68px;
+
+            #sortByContainer {
+                margin-left: 2vw;
+            }
+
+            #jobStatusContainer {
+                #activeBtn, #completedBtn, #archivedBtn {
+                    width: 70%;
+                }
+            }
         }
     }
 
     @media screen and (min-width: 1100px) {
         #toolBar {
             margin-top: 0;
-            height: 120px;
+            height: 80px;
+            grid-template-columns: 15% 1% 10% 30% 40%;
+            grid-template-rows: 100%;
+
+            #sortByContainer {
+                grid-row: 1;
+                grid-column: 1;
+                width: 90%;
+                height: 50%;
+                justify-self: center;
+                align-self: center;
+                margin-right: 1vw;
+
+                #sortBtn {
+                    width: 100%;
+                }
+            }
+
+            #desktopDividerCSS {
+                display: inline-block;
+                width: 10%;
+                height: 80%;
+                background-color: white;
+                align-self: center;
+                justify-self: center;
+            }
+
+            #jobStatusContainer {
+                grid-row: 1;
+                grid-column: 4;
+                #activeBtn, #completedBtn, #archivedBtn {
+                    width: 90%;
+                    height: 50%;
+                    margin-top: 1vh;
+                }
+            }
+
+            #toolViewTitle {
+                justify-self: center;
+                margin-top: 1vh;
+                grid-row: 1;
+                grid-column: 3;
+            }
         }
     }
 </style>

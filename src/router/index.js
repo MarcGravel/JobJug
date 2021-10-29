@@ -18,17 +18,11 @@ const routes = [
     component: Schedule
   },
   {
-    path: '/jobs/:jobId',
+    path: '/jobs/:jobId?',
     name: 'Jobs',
     props: true,
     component: Jobs
   },
-  {
-    path: '/jobs/',
-    name: 'Jobs',
-    component: Jobs
-  },
-  
 ]
 
 const router = new VueRouter({
