@@ -44,7 +44,7 @@
                 type="number"
                 label="Invoice Total"
             ></v-text-field>
-            <h4 id="invoicedTitle">Is Invoiced: (Required)</h4>
+            <h3 id="invoicedTitle">Is Invoiced: (Required)</h3>
             <v-radio-group 
                 v-model="newJob.invoiced"
                 :rules="invoicedRules"
@@ -62,7 +62,7 @@
                     >
                 </v-radio>
             </v-radio-group>
-            <h4 id="statusTitle">Job Status: (Required)</h4>
+            <h3 id="statusTitle">Job Status: (Required)</h3>
             <v-radio-group 
                 v-model="newJob.jobStatus"
                 :rules="statusRules"
@@ -86,35 +86,22 @@
                     >
                 </v-radio>
             </v-radio-group>
-            <v-menu
-                id="employeeMenu"
-                bottom
-                origin="center center"
-                transition="scale-transition"
+            <h3 id="assignTitle">Assign an employee:</h3>
+            <v-autocomplete
+                v-model="assignValue"
+                :items="assignMenuNames"
+                dense
+                filled
+                label="Search Employee Name:"
+            ></v-autocomplete>
+            <v-btn
+                id="assignBtn"
+                @click="assignEmployee(assignValue)"
                 >
-                <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                    id="assignBtn"
-                    v-bind="attrs"
-                    v-on="on"
-                    >
-                    Assign Job to Employee
-                    </v-btn>
-                </template>
-
-                <v-list>
-                    <v-list-item
-                    id="list"
-                    v-for="(item, i) in assignMenuNames"
-                    :key="i"
-                    @click="assignEmployee(item)"
-                    >
-                    <v-list-item-title>{{ item }}</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-            <h4 id="assignedEmp">Job is assigned to: {{assignedEmployee}}</h4>
-            <h4 id="jobScopeTitle">Job Scope:</h4>
+                Assign Employee
+            </v-btn>
+            <h3 id="assignedEmp">Job is assigned to: {{assignedEmployee}}</h3>
+            <h3 id="jobScopeTitle">Job Scope:</h3>
             <v-textarea
                 filled
                 auto-grow
@@ -122,7 +109,7 @@
                 >
                 <p>{{newJob.content}}</p>
             </v-textarea>
-            <h4 id="jobNotesTitle">Notes:</h4>
+            <h3 id="jobNotesTitle">Notes:</h3>
             <v-textarea
                 filled
                 auto-grow
@@ -173,6 +160,7 @@ import router from '../router'
                 assigned_emp_data: {
 
                 },
+                assignValue: '',
                 titleRules: {
                     required: v => !!v || 'Title is required',
                     length: v => v.length  <= 100 || 'Max 100 characters'
@@ -307,12 +295,40 @@ import router from '../router'
 
         #assignBtn {
             background-color:#52ab98;
+            width: 100%;
+            justify-self: end;
         }
 
         #assignedEmp {
             margin-top: 2vh;
             margin-bottom: 3vh;
             color: #52ab98;
+        }
+
+        #assignedList {
+            margin-bottom: 5vh;
+            display: grid;
+            justify-items: start;
+
+            h4 {
+                margin: 1vh 0 1vh 3vw;
+                color: #52ab98;
+                display: inline-block;
+            }
+
+            #delIcon {
+                color: #F47174;
+                margin-left: 2vw;
+                font-size: 1.3em;
+            }
+        }
+    }
+
+    @media screen and (min-width: 700px) {
+        #createForm {
+            #assignBtn {
+                width: 30%;
+            }
         }
     }
 
@@ -321,6 +337,10 @@ import router from '../router'
 
             #saveUpdateBtn {
                 width: 30%;
+            }
+
+            #assignBtn {
+                width: 20%;
             }
         }
     }

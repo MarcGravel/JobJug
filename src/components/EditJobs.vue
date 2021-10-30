@@ -37,7 +37,7 @@
                 type="number"
                 label="Invoice Total"
             ></v-text-field>
-            <h4 id="invoicedTitle">Is Invoiced:</h4>
+            <h3 id="invoicedTitle">Is Invoiced:</h3>
             <v-radio-group 
                 v-model="updJob.invoiced"
                 row>
@@ -54,7 +54,7 @@
                     >
                 </v-radio>
             </v-radio-group>
-            <h4 id="statusTitle">Job Status:</h4>
+            <h3 id="statusTitle">Job Status:</h3>
             <v-radio-group 
                 v-model="updJob.jobStatus"
                 row>
@@ -86,34 +86,21 @@
                         Delete
                 </v-btn>
             </div>
-            <v-menu
-                id="employeeMenu"
-                bottom
-                origin="center center"
-                transition="scale-transition"
+            <h3 id="assignTitle">Assign employees:</h3>
+            <v-autocomplete
+                v-model="assignValue"
+                :items="assignMenuNames"
+                dense
+                filled
+                label="Search Employee Name:"
+            ></v-autocomplete>
+            <v-btn
+                id="assignBtn"
+                @click="assignEmployee(assignValue)"
                 >
-                <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                    id="assignBtn"
-                    v-bind="attrs"
-                    v-on="on"
-                    >
-                    Assign Job to Employee
-                    </v-btn>
-                </template>
-
-                <v-list>
-                    <v-list-item
-                    id="list"
-                    v-for="(item, i) in assignMenuNames"
-                    :key="i"
-                    @click="assignEmployee(item)"
-                    >
-                    <v-list-item-title>{{ item }}</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-            <h4 id="assignedEmp">Job is assigned to:</h4>
+                Assign Employee
+            </v-btn>
+            <h3 id="assignedEmp">Job is assigned to:</h3>
             <div id="assignedList">
                 <div v-for="emp in allAssigned" :key="emp">
                     <h4 id="empName">{{emp}}</h4>
@@ -196,6 +183,7 @@ import router from '../router'
 
                 },
                 disableDelete: true,
+                assignValue: '',
             }
         },
         methods: {
@@ -225,16 +213,15 @@ import router from '../router'
             assignEmployee(employee) {
                 let session = cookies.get('session');
                 let token = session.token;
-                let userId
+                let userId;
 
                 //getUserId
                 for(let i = 0; i < this.allEmployees.length; i++) {
                     if (this.allEmployees[i].name == employee) {
                         userId = this.allEmployees[i].userId
-                        console.log(userId);
                     }
                 }
-                //delete user from job assignment
+                //assign user
                 axios.request({
                     url: process.env.VUE_APP_API_SITE+'/api/assign',
                     method: 'POST',
@@ -251,7 +238,7 @@ import router from '../router'
                     this.allAssigned.push(employee);
                     this.$emit("updateJobInfo");
                 }).catch((error) => {
-                    console.log(error);
+                    console.log(error.response);
                 })
             },
             sendUpdatedData() {
@@ -318,7 +305,6 @@ import router from '../router'
                 for(let i = 0; i < this.allEmployees.length; i++) {
                     if (this.allEmployees[i].name == employee) {
                         userId = this.allEmployees[i].userId
-                        console.log(userId);
                     }
                 }
                 //delete user from job assignment
@@ -335,7 +321,6 @@ import router from '../router'
                     }
                 }).then((response) => {
                     console.log(response);
-
                     //remove employee from list visually
                     let emp = this.allAssigned.indexOf(employee);
                     if (emp > -1) {
@@ -354,6 +339,7 @@ import router from '../router'
     #editForm {
         width: 100%;
         text-align: center;
+        display: grid;
 
         #invoicedTitle {
             text-align: start;
@@ -376,11 +362,19 @@ import router from '../router'
         #saveUpdateBtn {
             width: 80%;
             height: 5vh;
+            justify-self: center;
+        }
+
+        #assignTitle {
+            text-align: left;
+            margin-top: 2vh;
+            margin-bottom: 1vh;
         }
 
         #assignBtn {
             background-color:#52ab98;
             width: 100%;
+            justify-self: end;
         }
 
         #assignedEmp {
@@ -409,11 +403,23 @@ import router from '../router'
         }
     }
 
+    @media screen and (min-width: 700px) {
+        #editForm {
+            #assignBtn {
+                width: 30%;
+            }
+        }
+    }
+
     @media screen and (min-width: 1100px) { 
         #editForm {
 
             #saveUpdateBtn {
                 width: 30%;
+            }
+
+            #assignBtn {
+                width: 20%;
             }
         }
     }

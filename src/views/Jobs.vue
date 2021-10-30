@@ -652,6 +652,7 @@ import CreateJob from '../components/CreateJob.vue'
             grid-template-rows: 20% 80%;
 
             #editOverlayContainer {
+                height: fit-content;
 
                 #jobEdit {
                     width: 70vw;
@@ -665,6 +666,7 @@ import CreateJob from '../components/CreateJob.vue'
             }
 
             #createOverlayContainer {
+                height: fit-content;
 
                 #jobCreate {
                     width: 70vw;
