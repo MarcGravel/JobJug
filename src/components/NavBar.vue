@@ -55,7 +55,7 @@ import router from '../router'
                 navDrawer: null,
                 items: [
                     { title: 'Schedule', icon: 'event_note', route: '/schedule', color: '#57bba5' },
-                    { title: 'Job Lookup', icon: 'construction', route: '/jobs', color: '#57bba5' },
+                    { title: 'Jobs', icon: 'construction', route: '/jobs', color: '#57bba5' },
                     { title: 'Employees', icon: 'badge', route: '/users', color: '#57bba5'},
                     { title: 'Clients', icon: 'people', route: '/clients', color: '#57bba5'},
                     { title: 'Log Out', icon: 'logout', color: '#f47174' },
@@ -67,6 +67,9 @@ import router from '../router'
                 this.navDrawer = !this.navDrawer;
             },
             redirectLogout(title) {
+                let session = cookies.get('session');
+                let token = session.token;
+
                 if (title == "Log Out") {
                     axios.request({
                         url: process.env.VUE_APP_API_SITE+'/api/login',
@@ -75,11 +78,10 @@ import router from '../router'
                             'Content-Type': 'application/json'
                         },
                         data: {
-                            'sessionToken': cookies.get('sessionToken')
+                            'sessionToken': token
                         }
                     }).then(() => {
-                        cookies.remove('sessionToken');
-                        cookies.remove('userId');
+                        cookies.remove('session');
                         router.push('/')
                     }).catch((error) => {
                         console.log(error.response);
@@ -104,6 +106,7 @@ import router from '../router'
         grid-template-columns: 20% 45% 35%;
         align-items: center;
         overflow: hidden;
+        z-index: 99;
 
         #hamburger {
             position: fixed;

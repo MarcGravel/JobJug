@@ -34,7 +34,7 @@ import axios from 'axios'
             return {
                 items: [
                     { title: 'Schedule', icon: 'event_note', route: '/schedule' },
-                    { title: 'Job Lookup', icon: 'construction', route: '/jobs' },
+                    { title: 'Jobs', icon: 'construction', route: '/jobs' },
                     { title: 'Employees', icon: 'badge', route: '/users' },
                     { title: 'Clients', icon: 'people', route: '/clients' },
                     { title: 'Log Out', icon: 'logout' },
@@ -43,6 +43,9 @@ import axios from 'axios'
         },
         methods: {
             redirectLogout(title) {
+                let session = cookies.get('session');
+                let token = session.token;
+
                 if (title == "Log Out") {
                     axios.request({
                         url: process.env.VUE_APP_API_SITE+'/api/login',
@@ -51,11 +54,10 @@ import axios from 'axios'
                             'Content-Type': 'application/json'
                         },
                         data: {
-                            'sessionToken': cookies.get('sessionToken')
+                            'sessionToken': token
                         }
                     }).then(() => {
-                        cookies.remove('sessionToken');
-                        cookies.remove('userId');
+                        cookies.remove('session');
                         router.push('/')
                     }).catch((error) => {
                         console.log(error.response);

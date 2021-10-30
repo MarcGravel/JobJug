@@ -60,14 +60,16 @@ import router from '../router'
             PageFooter
         },
         computed: {
-            getToken() {
-                return cookies.get('sessionToken') 
+            sessionCookie() {
+                return cookies.get('session') 
             },
         },
         //if token exists, redirect to home
         beforeMount() {
-            if (this.getToken != undefined) {
-                router.push('/schedule');
+            if (this.sessionCookie != undefined) {
+                if (this.sessionCookie.token != undefined) {
+                    router.push('/schedule');
+                }
             }
         },
         data() {
@@ -104,7 +106,7 @@ import router from '../router'
                     let userId = response.data.userId;
                     let cookie = {token, userId};
                     cookies.set('session', cookie)
-                    this.$store.commit('userData', response.data);
+                    this.$store.commit('userData', response.data[0]);
                     router.push('/schedule')
                 }).catch((error) => {
                     console.log(error.response.data);

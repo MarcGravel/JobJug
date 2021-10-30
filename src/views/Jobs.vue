@@ -8,15 +8,15 @@
         </div>
         <div id="jobSearch">
             <h1>Search Jobs</h1>
-            <div id="searchElements">
+            <div id="searchElement">
                 <v-text-field
-                label="Seach jobs here..."
-                v-model="searchInput"
-                outlined
-                dark
-                >
-
-            </v-text-field>
+                    label="Seach jobs here..."
+                    v-model="searchInput"
+                    outlined
+                    dark
+                    hide-details
+                    >
+                </v-text-field>
             </div>
             <v-btn
                 id="searchBtn"
@@ -24,23 +24,148 @@
                 @click="searchJobs">
                 Search
             </v-btn>
+            <v-btn
+                v-if="user.authLevel == 'manager' || user.authLevel == 'admin'"
+                id="createBtn"
+                >
+                Create Job
+            </v-btn>
+            <div id="editBtnDiv" v-if="this.theJob != ''">
+                <v-btn
+                    v-if="user.authLevel == 'manager' || user.authLevel == 'admin'"
+                    id="editBtn"
+                    @click="editOverlay = !editOverlay"
+                    >
+                    Edit Job
+                </v-btn>
+            </div>
         </div>
         <div id="jobsContainer">
             <h1 id="noJobMsg" v-if="jobId == undefined">Please search for a job to display.</h1>
             <div id="jobInfo" v-if="jobId != undefined">
-                <h1>{{theJob.title}}</h1>
-                <h3>{{theJob.location}}</h3>
-                <h3>{{theJob.scheduledDate}}</h3>
-                <h5>{{theJob.scheduledDate}}</h5>
-                <h5>{{theJob.completedDate}}</h5>
-                <h5>{{theJob.cost}}</h5>
-                <h5>{{theJob.charged}}</h5>
-                <h5>{{theJob.jobStatus}}</h5>
-                <h5>{{theJob.invoiced}}</h5>
-                <h5>{{theJob.clientId}}</h5>
-                <p>{{theJob.notes}}</p>
+                <h1 id="titleInfo">{{theJob.title}}</h1>
+                <hr id="titleHr">
+                <div id="locationInfo" class="infoDivs">
+                    <h4 class="infoTag">
+                        Address:
+                    </h4>
+                    <h3 class="infoContent">{{theJob.location}}</h3>
+                    <hr class="midHr">
+                </div>
+                <div id="clientInfo" class="infoDivs">
+                    <h4 class="infoTag">
+                        Client Name:
+                    </h4>
+                    <h3 class="infoContent">{{theJob.clientId}}</h3>
+                    <hr class="midHr">
+                </div>
+                <div id="scheduledInfo" class="infoDivs">
+                    <h4 class="infoTag">
+                        Scheduled Date:
+                    </h4>
+                    <h3 class="infoContent">{{theJob.scheduledDate}}</h3>
+                    <hr class="midHr">
+                </div>
+                <div id="completedInfo" class="infoDivs">
+                    <h4 class="infoTag">
+                        Completed On:
+                    </h4>
+                    <h3 class="infoContent">{{theJob.completedDate}}</h3>
+                    <span v-if="this.theJob.completedDate != null"
+                        id="completedIcon"
+                    ></span>
+                    <hr class="midHr">
+                </div>
+                <div id="costInfo" class="infoDivs" v-if="user.authLevel != 'employee'">
+                    <h4 class="infoTag">
+                        Total Job Cost:
+                    </h4>
+                    <h3 class="infoContent">${{theJob.cost}}</h3>
+                    <hr class="midHr">
+                </div>
+                <div id="costInfo" class="infoDivs" v-if="user.authLevel != 'employee'">
+                    <h4 class="infoTag">
+                        Invoice Total:
+                    </h4>
+                    <h3 class="infoContent">${{theJob.charged}}</h3>
+                    <hr class="midHr">
+                </div>
+                <div id="costInfo" class="infoDivs" v-if="user.authLevel != 'employee'">
+                    <h4 class="infoTag">
+                        Invoiced:
+                    </h4>
+                    <div v-if="theJob.invoiced == 1" id="invoiceContent">
+                        <h3 class="infoContent">Yes</h3>
+                        <v-btn
+                            id="viewInvoiceBtn"
+                            >
+                            View Invoice
+                        </v-btn>
+                    </div>
+                    <div v-else id="noInvoiceContent">
+                        <h3 class="infoContent">No</h3>
+                        <v-btn
+                            id="invoiceBtn"
+                            :disabled="invoiceBtnDisabled"
+                            >
+                            Invoice
+                        </v-btn>
+                    </div>
+                    <hr class="midHr">
+                </div>
+                <div id="contentInfo">
+                    <h4 class="infoTag">
+                        Job Scope:
+                    </h4>
+                    <div id="contentContainer">
+                        <p>{{theJob.content}}</p>
+                    </div>
+                    <hr class="midHr">
+                </div>
+                <div id="notesInfo" class="infoDivs">
+                    <h4 class="infoTag">
+                        Notes:
+                    </h4>
+                    <v-textarea 
+                        id="notesContainer"
+                        filled
+                        auto-grow
+                        v-model="theJobNotes"
+                        
+                        >
+                        <p>{{theJob.notes}}</p>
+                    </v-textarea>
+                    <v-btn
+                        id="notesBtn"
+                        @click="addnewJobNotes"
+                        >
+                        Add Notes
+                    </v-btn>
+                </div>
+                <v-btn
+                    id="completeJobBtn"
+                    @click="completeJob"
+                    >
+                    Complete Job
+                </v-btn>
             </div>
         </div>
+        <v-overlay
+            id="editOverlayContainer"
+            :value="editOverlay"
+            opacity="1"
+            :absolute="absolute"
+            >
+            <div id="jobEdit">
+                <EditJobs :job="this.theJob" :updateJobInfo="getJobInfo"/>
+            </div>
+            <!--reloads job info in case user changed values wituhout submitting changes-->
+            <v-btn
+                id="editOverlaybackBtn"
+                @click="editOverlay = !editOverlay, getJobInfo()">
+                Back
+            </v-btn>
+        </v-overlay>
     </div>
 </template>
 
@@ -50,6 +175,7 @@ import router from '../router'
 import cookies from 'vue-cookies'
 import NavBar from '../components/NavBar.vue'
 import AsideBar from '../components/AsideBar.vue'
+import EditJobs from '../components/EditJobs.vue'
 
     export default {
         name: "Jobs",
@@ -57,6 +183,7 @@ import AsideBar from '../components/AsideBar.vue'
         components: {
             NavBar,
             AsideBar,
+            EditJobs,
         },
         computed: {
             sessionCookie() {
@@ -83,22 +210,7 @@ import AsideBar from '../components/AsideBar.vue'
                     }
 
                     if (this.jobId != undefined) {
-                        axios.request({
-                            url: process.env.VUE_APP_API_SITE+'/api/jobs',
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'sessionToken': this.token
-                            },
-                            params: {
-                                "jobId": this.jobId
-                            }
-                        }).then((response) => {
-                            this.theJob = response.data[0]
-                            console.log(this.theJob);
-                        }).catch((error) => {
-                            console.log(error + ' error');
-                        })
+                        this.getJobInfo();
                     }
                 }
             }
@@ -108,9 +220,13 @@ import AsideBar from '../components/AsideBar.vue'
                 user: '',
                 token: '',
                 userId: 0,
-                theJob: {},
+                theJob: '',
                 searchInput: '',
                 searchedArray: [],
+                invoiceBtnDisabled: true,
+                theJobNotes: '',
+                editOverlay: false,
+                absolute: true,
             }
         },
         methods: {
@@ -138,7 +254,7 @@ import AsideBar from '../components/AsideBar.vue'
                     console.log(error.response);
                 })
             },
-            getJob(jobId) {
+            getJobInfo() {
                 axios.request({
                     url: process.env.VUE_APP_API_SITE+'/api/jobs',
                     method: 'GET',
@@ -147,12 +263,59 @@ import AsideBar from '../components/AsideBar.vue'
                         'sessionToken': this.token
                     },
                     params: {
-                        "jobId": jobId
+                        "jobId": this.jobId
                     }
                 }).then((response) => {
-                    console.log(response);
+                    this.theJob = response.data[0];
+                    this.theJobNotes = this.theJob.notes;
+
+                    //format cost and charged to 2 decimal places and check for zeros
+                    this.theJob.cost = (Math.round(this.theJob.cost * 100) /100).toFixed(2);
+                    this.theJob.charged = (Math.round(this.theJob.charged * 100) /100).toFixed(2);
+
+                    if (this.theJob.charged != 0.00) {
+                        this. invoiceBtnDisabled = false
+                    }
                 }).catch((error) => {
                     console.log(error + ' error');
+                })
+            },
+            addnewJobNotes() {
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/jobs',
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: {
+                        'sessionToken': this.token,
+                        "jobId": this.jobId,
+                        "notes": this.theJobNotes
+                    }
+                }).then((response) => {
+                    console.log(response.data[0]);
+                    this.getJobInfo();
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            },
+            completeJob() {
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/jobs',
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: {
+                        'sessionToken': this.token,
+                        "jobId": this.jobId,
+                        "jobStatus": "completed"
+                    }
+                }).then((response) => {
+                    console.log(response.data[0]);
+                    this.getJobInfo();
+                }).catch((error) => {
+                    console.log(error.response);
                 })
             }
         }
@@ -166,22 +329,74 @@ import AsideBar from '../components/AsideBar.vue'
         height: fit-content;
         background-color: #f5fffd;
 
+        #editOverlayContainer {
+            display: grid;
+
+            #jobEdit {
+                top: 0;
+                width: 90vw;
+                height: fit-content;
+            }
+
+            #editOverlaybackBtn {
+                background-color: #52ab98;
+                color: whitesmoke;
+                margin-top: 2vh;
+                width: 80%;
+                margin-left: 10%;
+                height: 5vh;
+            }
+        }
+
         #jobSearch {
             background-color: #2b6777;
             margin-top: 56px;
             color: whitesmoke;
+            display: grid;
+            grid-template-columns: 33% 33% 33%;
+            grid-template-rows: 33% 33% 33%;
+            align-items: center;
 
-            h1, #searchElements, #searchBtn {
-                margin-left: 2vw;
+            h1 {
+                grid-row: 1;
+                grid-column: 1 / 4;
+                margin: 0 0 1vh 2vw;
             }
 
-            #searchElements {
+            #searchElement {
+                grid-row: 2;
+                grid-column: 1 / 4;
                 width: 80%;
+                margin: 0 0 1vh 2vw;
             }
 
             #searchBtn {
-                margin: 0 0 1vh 2vw;
+                grid-row: 3;
+                grid-column: 3;
+                margin-right: 2vw;
+                color: whitesmoke;
+            }
 
+            #createBtn {
+                grid-row: 3;
+                grid-column: 1;
+                background-color: #63b9a7;
+                margin-left: 2vw;
+                color: whitesmoke;
+            }
+
+            #editBtnDiv {
+                grid-row: 3;
+                grid-column: 2;
+                width: 100%;
+                display: grid;
+
+                #editBtn {
+                background-color: #f47174;
+                width: 80%;
+                justify-self: center;
+                color: whitesmoke;
+            }
             }
         }
 
@@ -196,10 +411,158 @@ import AsideBar from '../components/AsideBar.vue'
                 color: #ff4e44;
                 text-align: center;
             }
+
+            #jobInfo {
+                padding: 2vh 2vw 2vh 2vw;
+                margin-top: 2vh;
+                display: grid;
+
+                //applies css to all children of class
+                .infoDivs > * {
+                    display: inline-block;
+                }
+
+                .infoTag {
+                    color: #2b6777;
+                    margin-bottom: 1vh;
+                    font-size: 1.5em;
+                }
+
+                .infoContent {
+                    margin-left: 4vw;
+                }
+
+                #titleInfo {
+                    margin-bottom: 3vh;
+                    justify-self: center;
+                }
+
+                #titleHr {
+                    margin-bottom: 5vh;
+                    width: 60%;
+                    justify-self: center;
+                }
+
+                .midHr {
+                    width: 95%;
+                    justify-self: center;
+                    margin-bottom: 2vh;
+                }
+
+                #completedInfo {
+                    
+                    #completedIcon {
+                        width: 20px;
+                        height: 20px;
+                        margin-left: 3vw;
+                        border-radius: 50px;
+                        background-color: #4AC948;
+                    }
+                }
+
+                #noInvoiceContent > *, #invoiceContent > * {
+                    display: inline-block;
+                }
+
+                #noInvoiceContent {
+                    #invoiceBtn {
+                        margin-left: 10vw;
+                        margin-bottom: 1vh;
+                        background-color: #f47174;
+                        color: whitesmoke;
+                    }
+                }
+
+                #invoiceContent {
+
+                    #viewInvoiceBtn {
+                        margin-left: 10vw;
+                        margin-bottom: 1vh;
+                        background-color: #24a0ed;
+                        color: whitesmoke;
+                    }
+                }
+
+                #contentInfo {
+                    
+                    #contentContainer {
+                        padding: 0 4vw 0 4vw;
+                    }
+                }
+
+                #notesInfo {
+                    display: grid;
+
+                    #notesContainer {
+                        justify-self: center;
+                        width: 90%;
+                        min-height: 10vh;
+                        height: fit-content;
+                        padding: 1vh 1vw 1vh 1vw;
+                        margin-bottom: 3vh;
+                        background-color: white;
+                        border: 1px solid black;
+                        border-radius: 5px;
+                    }
+
+                    #notesBtn {
+                        width: fit-content;
+                        padding: 0 2vw 0 2vw;
+                        background-color: #24a0ed;
+                        color: whitesmoke;
+                        justify-self: end;
+                        margin-right: 5%;
+                    }
+                }
+                
+                #completeJobBtn {
+                    justify-self: center;
+                    width: 80%;
+                    height: 10vh;
+                    background-color: #4AC948;
+                    color: whitesmoke;
+                    font-size: 1.6em;
+                    margin-top: 4vh;
+                }
+            }
         }
     }
 
     @media screen and (min-width: 700px) { 
+
+        #jobsPage {
+
+            #jobSearch {
+                margin-top: 68px;
+
+                #searchBtn {
+                    width: 60%;
+                    justify-self: end;
+                }
+
+                #createBtn {
+                    width: 60%;
+                }
+
+                #editBtnDiv {
+                    #editBtn {
+                        width: 60%;
+                    }
+                }
+            }
+
+            #jobsContainer {
+                
+                #jobInfo {
+                    width: 70%;
+                    justify-self: center;
+
+                    #completeJobBtn {
+                        height: 8vh;
+                    }
+                }
+            }
+        }
     }
 
     @media screen and (min-width: 1100px) { 
@@ -208,26 +571,53 @@ import AsideBar from '../components/AsideBar.vue'
             grid-template-columns: 10% 90%;
             grid-template-rows: 20% 80%;
 
+            #editOverlayContainer {
+
+                #jobEdit {
+                    width: 70vw;
+                    margin-left: 5%;
+                }
+
+                    #editOverlaybackBtn {
+                    width: 30%;
+                    margin-left: 40%;
+                }
+            }
+
             #asideBar {
                 grid-column: 1;
                 position: fixed;
                 width: 10%;
+                z-index: 99;
             }
 
             #jobSearch {
                 margin-top: 0;;
                 grid-row: 1;
                 grid-column: 2;
+
+                #searchBtn, #createBtn {
+                    width: 50%;
+                }
+
+                #editBtnDiv {
+                    #editBtn {
+                        width: 60%;
+                    }
+                }
             }
 
             #jobsContainer {
                 grid-row: 2;
                 grid-column: 2;
                 margin-top: 0;
-            }
 
-            #toolBar {
-                height: 80px;
+                #jobInfo {
+
+                    #completeJobBtn {
+                        height: 5vh;
+                    }
+                }
             }
         }
     }
