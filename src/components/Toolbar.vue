@@ -29,7 +29,7 @@
                         <v-list-item-title>{{ item }}</v-list-item-title>
                         </v-list-item>
                     </v-list>
-                    </v-menu>
+                </v-menu>
             </div>
             <div id="desktopDividerCSS"></div>
             <h4 id="toolViewTitle">Filter {{sortType}} by:</h4>

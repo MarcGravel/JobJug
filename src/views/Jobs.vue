@@ -27,6 +27,7 @@
             <v-btn
                 v-if="user.authLevel == 'manager' || user.authLevel == 'admin'"
                 id="createBtn"
+                @click="createOverlay = !createOverlay"
                 >
                 Create Job
             </v-btn>
@@ -59,6 +60,13 @@
                     <h3 class="infoContent">{{theJob.clientId}}</h3>
                     <hr class="midHr">
                 </div>
+                <div id="assignedInfo" class="infoDivs">
+                    <h4 class="infoTag">
+                        Assigned to:
+                    </h4>
+                    <h3 class="infoContent" v-for="emp in this.assignedUserNames" :key="emp">{{emp}} </h3>
+                    <hr class="midHr">
+                </div>
                 <div id="scheduledInfo" class="infoDivs">
                     <h4 class="infoTag">
                         Scheduled Date:
@@ -71,7 +79,7 @@
                         Completed On:
                     </h4>
                     <h3 class="infoContent">{{theJob.completedDate}}</h3>
-                    <span v-if="this.theJob.completedDate != null"
+                    <span v-if="this.theJob.jobStatus == 'completed'"
                         id="completedIcon"
                     ></span>
                     <hr class="midHr">
@@ -145,6 +153,7 @@
                 <v-btn
                     id="completeJobBtn"
                     @click="completeJob"
+                    :disabled="completeBtnDisable"
                     >
                     Complete Job
                 </v-btn>
@@ -157,12 +166,31 @@
             :absolute="absolute"
             >
             <div id="jobEdit">
-                <EditJobs :job="this.theJob" :updateJobInfo="getJobInfo"/>
+                <EditJobs 
+                    :job="this.theJob" 
+                    :updateJobInfo="getJobInfo" @closeOverlay="editOverlay = !editOverlay"
+                    :allAssigned="this.assignedUserNames"
+                    />
             </div>
             <!--reloads job info in case user changed values wituhout submitting changes-->
             <v-btn
                 id="editOverlaybackBtn"
                 @click="editOverlay = !editOverlay, getJobInfo()">
+                Back
+            </v-btn>
+        </v-overlay>
+        <v-overlay
+            id="createOverlayContainer"
+            :value="createOverlay"
+            opacity="1"
+            :absolute="absolute"
+            >
+            <div id="jobCreate">
+                <CreateJob @closeOverlay="createOverlay = !createOverlay"/>
+            </div>
+            <v-btn
+                id="createOverlaybackBtn"
+                @click="createOverlay = !createOverlay">
                 Back
             </v-btn>
         </v-overlay>
@@ -176,6 +204,7 @@ import cookies from 'vue-cookies'
 import NavBar from '../components/NavBar.vue'
 import AsideBar from '../components/AsideBar.vue'
 import EditJobs from '../components/EditJobs.vue'
+import CreateJob from '../components/CreateJob.vue'
 
     export default {
         name: "Jobs",
@@ -184,6 +213,7 @@ import EditJobs from '../components/EditJobs.vue'
             NavBar,
             AsideBar,
             EditJobs,
+            CreateJob,
         },
         computed: {
             sessionCookie() {
@@ -211,6 +241,7 @@ import EditJobs from '../components/EditJobs.vue'
 
                     if (this.jobId != undefined) {
                         this.getJobInfo();
+                        this.getAssignedUsers();
                     }
                 }
             }
@@ -227,6 +258,10 @@ import EditJobs from '../components/EditJobs.vue'
                 theJobNotes: '',
                 editOverlay: false,
                 absolute: true,
+                completeBtnDisable: false,
+                createOverlay: false,
+                assignedUsers: [],
+                assignedUserNames: [],
             }
         },
         methods: {
@@ -274,7 +309,33 @@ import EditJobs from '../components/EditJobs.vue'
                     this.theJob.charged = (Math.round(this.theJob.charged * 100) /100).toFixed(2);
 
                     if (this.theJob.charged != 0.00) {
-                        this. invoiceBtnDisabled = false
+                        this. invoiceBtnDisabled = false;
+                    }
+
+                    if (this.theJob.jobStatus == 'completed' || this.theJob.jobStatus == 'archived') {
+                        this.completeBtnDisable = true;
+                    }
+                }).catch((error) => {
+                    console.log(error + ' error');
+                })
+            },
+            getAssignedUsers() {
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/assign',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'sessionToken': this.token
+                    },
+                    params: {
+                        "jobId": this.jobId
+                    }
+                }).then((response) => {
+                    this.assignedUsers = response.data;
+
+                    //add names of users to assigned user list
+                    for(let i = 0; i < this.assignedUsers.length; i++) {
+                        this.assignedUserNames.push(this.assignedUsers[i].name);
                     }
                 }).catch((error) => {
                     console.log(error + ' error');
@@ -333,12 +394,31 @@ import EditJobs from '../components/EditJobs.vue'
             display: grid;
 
             #jobEdit {
-                top: 0;
                 width: 90vw;
                 height: fit-content;
             }
 
             #editOverlaybackBtn {
+                background-color: #52ab98;
+                color: whitesmoke;
+                margin-top: 2vh;
+                width: 80%;
+                margin-left: 10%;
+                height: 5vh;
+            }
+        }
+
+        #createOverlayContainer {
+            display: grid;
+            height: fit-content;
+            padding-bottom: 5vh;
+
+            #jobCreate {
+                width: 90vw;
+                height: fit-content;
+            }
+
+            #createOverlaybackBtn {
                 background-color: #52ab98;
                 color: whitesmoke;
                 margin-top: 2vh;
@@ -579,6 +659,19 @@ import EditJobs from '../components/EditJobs.vue'
                 }
 
                     #editOverlaybackBtn {
+                    width: 30%;
+                    margin-left: 40%;
+                }
+            }
+
+            #createOverlayContainer {
+
+                #jobCreate {
+                    width: 70vw;
+                    margin-left: 5%;
+                }
+
+                    #createOverlaybackBtn {
                     width: 30%;
                     margin-left: 40%;
                 }

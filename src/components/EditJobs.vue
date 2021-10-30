@@ -3,43 +3,43 @@
         <v-form id="editForm">
             <h3>Change any field below to update it</h3>
             <v-text-field
-                v-model="job.title"
+                v-model="updJob.title"
                 :rules="titleRules"
                 label="Job Title"
             ></v-text-field>
             <v-text-field
-                v-model="job.location"
+                v-model="updJob.location"
                 :rules="locationRules"
                 label="Job Location"
             ></v-text-field>
             <v-text-field
-                v-model="job.clientId"
+                v-model="updJob.clientId"
                 :rules="clientRules"
                 label="Client Name"
             ></v-text-field>
             <v-text-field
-                v-model="job.scheduledDate"
+                v-model="updJob.scheduledDate"
                 :rules="schedRules"
                 label="Scheduled Date YYYY-MM-DD"
             ></v-text-field>
             <v-text-field
-                v-model="job.completedDate"
+                v-model="updJob.completedDate"
                 :rules="completedDateRules"
                 label="Completed Date YYYY-MM-DD"
             ></v-text-field>
             <v-text-field
-                v-model="job.cost"
+                v-model="updJob.cost"
                 type="number"
                 label="Job Cost"
             ></v-text-field>
             <v-text-field
-                v-model="job.charged"
+                v-model="updJob.charged"
                 type="number"
                 label="Invoice Total"
             ></v-text-field>
             <h4 id="invoicedTitle">Is Invoiced:</h4>
             <v-radio-group 
-                v-model="job.invoiced"
+                v-model="updJob.invoiced"
                 row>
                 <v-radio
                     label="Yes"
@@ -54,17 +54,89 @@
                     >
                 </v-radio>
             </v-radio-group>
+            <h4 id="statusTitle">Job Status:</h4>
+            <v-radio-group 
+                v-model="updJob.jobStatus"
+                row>
+                <v-radio
+                    label="Active"
+                    value="active"
+                    color="#24a0ed"
+                    >
+                </v-radio>
+                <v-radio
+                    label="Completed"
+                    value="completed"
+                    color="#4AC948"
+                    >
+                </v-radio>
+                <v-radio
+                    label="Archived"
+                    value="archived"
+                    color="#ff3333"
+                    >
+                </v-radio>
+            </v-radio-group>
+            <div id="deleteContainer">
+                <h3>Delete job: (Cannot delete invoiced jobs)</h3>
+                <v-btn id="deleteBtn"
+                    color="error"
+                    :disabled="disableDelete" 
+                    @click="deleteJob">
+                        Delete
+                </v-btn>
+            </div>
+            <v-menu
+                id="employeeMenu"
+                bottom
+                origin="center center"
+                transition="scale-transition"
+                >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                    id="assignBtn"
+                    v-bind="attrs"
+                    v-on="on"
+                    >
+                    Assign Job to Employee
+                    </v-btn>
+                </template>
+
+                <v-list>
+                    <v-list-item
+                    id="list"
+                    v-for="(item, i) in assignMenuNames"
+                    :key="i"
+                    @click="assignEmployee(item)"
+                    >
+                    <v-list-item-title>{{ item }}</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
+            <h4 id="assignedEmp">Job is assigned to:</h4>
+            <div id="assignedList">
+                <div v-for="emp in allAssigned" :key="emp">
+                    <h4 id="empName">{{emp}}</h4>
+                    <v-icon 
+                        id="delIcon"
+                        @click="removeAssign(emp)"    
+                        >
+                        delete
+                    </v-icon>
+                </div>
+            </div>
             <v-textarea
+                id="contentContainer"
                 filled
                 auto-grow
-                v-model="job.content"
+                v-model="updJob.content"
                 >
                 <p>{{job.content}}</p>
             </v-textarea>
 
             <v-btn id="saveUpdateBtn"
                 color="primary" 
-                @click="sendUpdatedData(), overlay = !overlay">
+                @click="sendUpdatedData()">
                     Save
             </v-btn>
         </v-form>
@@ -74,12 +146,32 @@
 <script>
 import cookies from 'vue-cookies'
 import axios from 'axios'
+import router from '../router'
 
     export default {
         name: "EditJobs",
-        props: ['job'],
+        props: ['job', 'allAssigned'],
+        beforeMount() {
+            this.loadAllEmployees();
+            if(this.job.invoiced == 0 || this.job.invoiced == null) {
+                this.disableDelete = false;
+            }
+        },
         data() {
             return {
+                updJob: {
+                    title: this.job.title,
+                    location: this.job.location,
+                    content: this.job.content,
+                    scheduledDate: this.job.scheduledDate,
+                    completedDate: this.job.completedDate,
+                    cost: this.job.cost,
+                    charged: this.job.charged,
+                    jobStatus: this.job.jobStatus,
+                    invoiced: this.job.invoiced,
+                    clientId: this.job.clientId,
+                    notes: this.job.notes,
+                },
                 titleRules: [
                     v => v.length  <= 100 || 'Max 100 characters'
                 ],
@@ -95,37 +187,163 @@ import axios from 'axios'
                 clientRules: [
                     v => v.length  <= 60 || 'Max 60 characters'
                 ],
+                allEmployees: {
+
+                },
+                assignMenuNames: ["None"],
+                assignedEmployee: '',
+                assigned_emp_data: {
+
+                },
+                disableDelete: true,
             }
         },
         methods: {
+            loadAllEmployees() {
+                let session = cookies.get('session');
+                let token = session.token;
+
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/users',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'sessionToken': token
+                    },
+                }).then((response) => {
+                    this.allEmployees = response.data
+
+                    //add employee names to menu list
+                    for(let i = 0; i < this.allEmployees.length; i++) {
+                        this.assignMenuNames.push(this.allEmployees[i].name)
+                    }
+
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            },
+            assignEmployee(employee) {
+                let session = cookies.get('session');
+                let token = session.token;
+                let userId
+
+                //getUserId
+                for(let i = 0; i < this.allEmployees.length; i++) {
+                    if (this.allEmployees[i].name == employee) {
+                        userId = this.allEmployees[i].userId
+                        console.log(userId);
+                    }
+                }
+                //delete user from job assignment
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/assign',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: {
+                        "sessionToken": token,
+                        "jobId": this.job.jobId,
+                        "userId": userId
+                    }
+                }).then((response) => {
+                    console.log(response);
+                    this.allAssigned.push(employee);
+                    this.$emit("updateJobInfo");
+                }).catch((error) => {
+                    console.log(error);
+                })
+            },
             sendUpdatedData() {
                 let session = cookies.get('session');
                 let token = session.token;
+
+                //removes null values from request
+                Object.keys(this.updJob).forEach((key) =>{
+                    if (this.updJob[key] == null) {
+                        delete this.updJob[key];
+                    }
+                })
+
+                //add token to request object
+                this.updJob.sessionToken = token
+                //add jobId to object
+                this.updJob.jobId = this.job.jobId
+
                 axios.request({
                     url: process.env.VUE_APP_API_SITE+'/api/jobs',
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    data: {
-                        'sessionToken': token,
-                        "jobId": this.job.id,
-                        "title": this.job.title,
-                        "location": this.job.location,
-                        "content": this.job.content,
-                        "scheduledDate": this.job.scheduledDate,
-                        "completedDate": this.job.completedDate,
-                        "cost": this.job.cost,
-                        "charged": this.job.charged,
-                        "jobStatus": this.job.jobStatus,
-                        "invoiced": this.job.invoiced,
-                        "clientId": this.job.clientId,
-                    }
+                    data: this.updJob
                 }).then((response) => {
                     console.log(response.data[0]);
-                    this.$emit("updateJobInfo");
+                        this.$emit("updateJobInfo");
+                        this.$emit("closeOverlay");
+                        router.go();
                 }).catch((error) => {
                     console.log(error.response);
+                })
+            },
+            deleteJob() {
+                let session = cookies.get('session');
+                let token = session.token;
+
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/jobs',
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: {
+                        "sessionToken": token,
+                        "jobId": this.job.jobId,
+                    }
+                }).then((response) => {
+                    console.log(response);
+                    this.$emit("updateJobInfo");
+                    this.$emit("closeOverlay");
+                    router.replace('/jobs')
+                }).catch((error) => {
+                    console.log(error);
+                })
+            },
+            removeAssign(employee) {
+                let session = cookies.get('session');
+                let token = session.token;
+                let userId
+
+                //getUserId
+                for(let i = 0; i < this.allEmployees.length; i++) {
+                    if (this.allEmployees[i].name == employee) {
+                        userId = this.allEmployees[i].userId
+                        console.log(userId);
+                    }
+                }
+                //delete user from job assignment
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/assign',
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: {
+                        "sessionToken": token,
+                        "jobId": this.job.jobId,
+                        "userId": userId
+                    }
+                }).then((response) => {
+                    console.log(response);
+
+                    //remove employee from list visually
+                    let emp = this.allAssigned.indexOf(employee);
+                    if (emp > -1) {
+                        this.allAssigned.splice(emp, 1);
+                    }
+                    this.$emit("updateJobInfo");
+                }).catch((error) => {
+                    console.log(error);
                 })
             }
         }
@@ -141,10 +359,53 @@ import axios from 'axios'
             text-align: start;
         }
 
+        #statusTitle {
+            text-align: start;
+        }
+
+        #deleteContainer {
+            margin-bottom: 2vh;
+            text-align: start;
+
+            #deleteBtn {
+                margin-top: 1vh;
+            }
+        }
+
         //back button of edit overlay is on the jobs page @ overlay
         #saveUpdateBtn {
             width: 80%;
             height: 5vh;
+        }
+
+        #assignBtn {
+            background-color:#52ab98;
+            width: 100%;
+        }
+
+        #assignedEmp {
+            margin-top: 2vh;
+            margin-bottom: 3vh;
+            color: #52ab98;
+            text-align: start;
+        }
+
+        #assignedList {
+            margin-bottom: 5vh;
+            display: grid;
+            justify-items: start;
+
+            h4 {
+                margin: 1vh 0 1vh 3vw;
+                color: #52ab98;
+                display: inline-block;
+            }
+
+            #delIcon {
+                color: #F47174;
+                margin-left: 2vw;
+                font-size: 1.3em;
+            }
         }
     }
 
