@@ -27,6 +27,9 @@
                 </div>
             </div>
         </div>
+        <div id="footer">
+            <PageFooter />
+        </div>
     </div>
 </template>
 
@@ -38,6 +41,7 @@ import NavBar from '../components/NavBar.vue'
 import AsideBar from '../components/AsideBar.vue'
 import Toolbar from '../components/Toolbar.vue'
 import ScheduleJobDisplay from '../components/ScheduleJobDisplay.vue'
+import PageFooter from '../components/PageFooter.vue'
 
     export default {
         name: "Home",
@@ -45,7 +49,8 @@ import ScheduleJobDisplay from '../components/ScheduleJobDisplay.vue'
             NavBar,
             AsideBar,
             Toolbar,
-            ScheduleJobDisplay
+            ScheduleJobDisplay,
+            PageFooter
         },
         computed: {
             sessionCookie() {
@@ -247,7 +252,7 @@ import ScheduleJobDisplay from '../components/ScheduleJobDisplay.vue'
         width: 100vw;
         min-height: 100%;
         height: fit-content;
-        background-color: #ffffff;
+        background-color: #f5fffd;
 
         #schedContainer {
             margin-top: 140px;
@@ -274,7 +279,7 @@ import ScheduleJobDisplay from '../components/ScheduleJobDisplay.vue'
         #schedPage {
             display: grid;
             grid-template-columns: 10% 90%;
-            grid-template-rows: 152px auto;
+            grid-template-rows: 152px auto 10vh;
 
             #asideBar {
                 grid-column: 1;
@@ -298,6 +303,10 @@ import ScheduleJobDisplay from '../components/ScheduleJobDisplay.vue'
                     width: 100%;
                     height: fit-content;
                 }
+            }
+
+            #pageFooter {
+                grid-row: 3;
             }
         }
     }

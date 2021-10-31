@@ -649,7 +649,7 @@ import CreateJob from '../components/CreateJob.vue'
         #jobsPage {
             display: grid;
             grid-template-columns: 10% 90%;
-            grid-template-rows: 20% 80%;
+            grid-template-rows: 20vh auto;
 
             #editOverlayContainer {
                 height: fit-content;

@@ -1,6 +1,7 @@
 <template>
     <div id="footer">
-        <img src="@/assets/jobjugLogo.png" alt="Logo">
+        <img id="image" src="@/assets/jobjugLogo.png" alt="Logo">
+        <h4 id=deskTop>JobJug</h4>
         <h4>2021 ©</h4>
     </div>
 </template>
@@ -39,6 +40,10 @@
             font-size: 1.5em;
             font-family: 'Righteous', cursive;
         }
+
+        #deskTop {
+            display: none;
+        }
     }
 
     @media screen and (max-width: 335px) {
@@ -52,7 +57,24 @@
 
     @media screen and (min-width: 1100px) {
         #footer {
+            height: 100%;
             background-color: #f5fffd;
+            align-items: end;
+
+            #image {
+                display: none;
+            }
+
+            #deskTop {
+                display: inline-block;
+                grid-column: 1;
+                justify-self: end;
+                font-size: 1.6em;
+            }
+
+            h4 {
+                align-self: end;
+            }
         }
     }
 </style>
