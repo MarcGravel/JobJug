@@ -83,6 +83,7 @@ import axios from 'axios'
             height: 100vh;
             display: grid;
             grid-template-rows: 10vh 5vh 75vh;
+            overflow: hidden;
 
             #imgCont {
                 grid-row: 1;

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Schedule from '../views/Schedule.vue'
 import Jobs from '../views/Jobs.vue'
+import Users from '../views/Users.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,12 @@ const routes = [
     name: 'Jobs',
     props: true,
     component: Jobs
+  },
+  {
+    path: '/users/:userId?',
+    name: 'Users',
+    props: true,
+    component: Users
   },
 ]
 
