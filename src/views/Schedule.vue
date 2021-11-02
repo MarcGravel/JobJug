@@ -7,7 +7,7 @@
             <AsideBar :user="user" />
         </div>
         <div id="toolBar">
-            <Toolbar :user="user" :view="'schedule'" @filterJobs="filterJobs"/>
+            <ScheduleToolbar :user="user" @filterJobs="filterJobs"/>
         </div>
         <div id="schedContainer">
             <h1>Job Schedule: </h1>
@@ -39,7 +39,7 @@ import router from '../router'
 import cookies from 'vue-cookies'
 import NavBar from '../components/NavBar.vue'
 import AsideBar from '../components/AsideBar.vue'
-import Toolbar from '../components/Toolbar.vue'
+import ScheduleToolbar from '../components/ScheduleToolbar.vue'
 import ScheduleJobDisplay from '../components/ScheduleJobDisplay.vue'
 import PageFooter from '../components/PageFooter.vue'
 
@@ -48,7 +48,7 @@ import PageFooter from '../components/PageFooter.vue'
         components: {
             NavBar,
             AsideBar,
-            Toolbar,
+            ScheduleToolbar,
             ScheduleJobDisplay,
             PageFooter
         },

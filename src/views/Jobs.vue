@@ -46,6 +46,13 @@
             <div id="jobInfo" v-if="jobId != undefined">
                 <h1 id="titleInfo">{{theJob.title}}</h1>
                 <hr id="titleHr">
+                <div id="jobIdInfo" class="infoDivs">
+                    <h4 class="infoTag">
+                        Job ID:
+                    </h4>
+                    <h3 class="infoContent">{{theJob.jobId}}</h3>
+                    <hr class="midHr">
+                </div>
                 <div id="locationInfo" class="infoDivs">
                     <h4 class="infoTag">
                         Address:
@@ -392,6 +399,7 @@ import CreateJob from '../components/CreateJob.vue'
 
         #editOverlayContainer {
             display: grid;
+            margin-top: 56px;
 
             #jobEdit {
                 width: 90vw;
@@ -410,8 +418,8 @@ import CreateJob from '../components/CreateJob.vue'
 
         #createOverlayContainer {
             display: grid;
-            height: fit-content;
             padding-bottom: 5vh;
+            margin-top: 56px;
 
             #jobCreate {
                 width: 90vw;
@@ -509,7 +517,7 @@ import CreateJob from '../components/CreateJob.vue'
                 }
 
                 .infoContent {
-                    margin-left: 4vw;
+                    margin-left: 2vw;
                 }
 
                 #titleInfo {
@@ -642,6 +650,10 @@ import CreateJob from '../components/CreateJob.vue'
                     }
                 }
             }
+
+            #createOverlayContainer {
+                margin-top: 68px;
+            }
         }
     }
 
@@ -652,7 +664,7 @@ import CreateJob from '../components/CreateJob.vue'
             grid-template-rows: 20vh auto;
 
             #editOverlayContainer {
-                height: fit-content;
+                margin-top: 0;
 
                 #jobEdit {
                     width: 70vw;
@@ -666,7 +678,7 @@ import CreateJob from '../components/CreateJob.vue'
             }
 
             #createOverlayContainer {
-                height: fit-content;
+                margin-top: 0;
 
                 #jobCreate {
                     width: 70vw;

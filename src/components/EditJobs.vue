@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-form id="editForm">
-            <h3>Change any field below to update it</h3>
+            <h1 id="formTitle">Edit Job</h1>
             <v-text-field
                 v-model="updJob.title"
                 :rules="titleRules"
@@ -340,6 +340,11 @@ import router from '../router'
         width: 100%;
         text-align: center;
         display: grid;
+
+        #formTitle {
+            justify-self: center;
+            color: #52ab98;
+        }
 
         #invoicedTitle {
             text-align: start;

@@ -2,7 +2,6 @@
     <div>
         <div id="toolBar">
             <div id="sortByContainer">
-                <!--Dynamic menu changes options based on view-->
                 <v-menu
                     id="menu"
                     bottom
@@ -34,7 +33,7 @@
             <div id="desktopDividerCSS"></div>
             <h4 id="toolViewTitle">Filter {{sortType}} by:</h4>
             <!--If on schedule view, show this-->
-            <div id="jobStatusContainer" v-if="view == 'schedule'">
+            <div id="jobStatusContainer">
                 <v-btn
                     id="activeBtn"
                     color="#24a0ed"
@@ -52,7 +51,7 @@
                 <v-btn
                     v-if="user.authLevel == 'manager' || user.authLevel == 'admin'"
                     id="archivedBtn"
-                    color="#ff3333"
+                    color="#f47174"
                     @click="emitArchivedFilter"
                     >
                     Archive
@@ -64,19 +63,13 @@
 
 <script>
     export default {
-        name: "Toolbar",
-        props: ["user", "view"],
-        beforeMount() {
-            if (this.view == "schedule") {
-                this.sortBoxItems = ["All", "Scheduled Date", "Job Status", "Client", "Job Name"];
-                this.sortType = "jobs"
-            }
-        },
+        name: "ScheduleToolbar",
+        props: ["user"],
         data() {
             return {
                 sortValue: undefined,
-                sortBoxItems: [],
-                sortType: '',
+                sortBoxItems: ["All", "Scheduled Date", "Job Status", "Client", "Job Name"],
+                sortType: 'jobs',
             }
         },
         methods: {
@@ -118,8 +111,7 @@
             grid-column: 1;
             grid-row: 1;
             width: 30vw;
-            background-color: #f5fffd;
-            border-radius: 10px;
+            background-color: #2b6777;
             margin-top: 1vh;
             margin-left: 1vw;
 
@@ -194,6 +186,10 @@
                     width: 70%;
                 }
             }
+
+            #toolViewTitle {
+                font-size: 1.2em;
+            }
         }
     }
 
@@ -215,6 +211,7 @@
 
                 #sortBtn {
                     width: 100%;
+                    font-size: 1.1em;
                 }
             }
 
@@ -230,10 +227,12 @@
             #jobStatusContainer {
                 grid-row: 1;
                 grid-column: 4;
+                
                 #activeBtn, #completedBtn, #archivedBtn {
                     width: 90%;
                     height: 50%;
                     margin-top: 1vh;
+                    font-size: 1em;
                 }
             }
 
@@ -242,6 +241,7 @@
                 margin-top: 1vh;
                 grid-row: 1;
                 grid-column: 3;
+                font-size: 1.1em;
             }
         }
     }
