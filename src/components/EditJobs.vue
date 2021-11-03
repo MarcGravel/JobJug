@@ -126,6 +126,11 @@
                 @click="sendUpdatedData()">
                     Save
             </v-btn>
+            <v-btn id="backBtn"
+                color="#52ab98" 
+                @click="closeOverlay">
+                    Back
+            </v-btn>
         </v-form>
     </div>
 </template>
@@ -187,6 +192,9 @@ import router from '../router'
             }
         },
         methods: {
+            closeOverlay() {
+                this.$emit("closeOverlay");
+            },
             loadAllEmployees() {
                 let session = cookies.get('session');
                 let token = session.token;
@@ -368,6 +376,13 @@ import router from '../router'
             width: 80%;
             height: 5vh;
             justify-self: center;
+            margin-bottom: 2vh;
+        }
+
+        #backBtn {
+            justify-self: center;
+            width: 80%;
+            height: 5vh;
         }
 
         #assignTitle {
@@ -420,6 +435,10 @@ import router from '../router'
         #editForm {
 
             #saveUpdateBtn {
+                width: 30%;
+            }
+
+            #backBtn {
                 width: 30%;
             }
 

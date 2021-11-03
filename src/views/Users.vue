@@ -47,13 +47,8 @@
             :absolute="absolute"
             >
             <div id="userCreate">
-                <CreateUser />
+                <CreateUser @closeOverlay="createOverlay = !createOverlay" @loadUsers="loadAllUsers"/>
             </div>
-            <v-btn
-                id="createOverlaybackBtn"
-                @click="createOverlay = !createOverlay">
-                Back
-            </v-btn>
         </v-overlay>
     </div>
 </template>
@@ -254,16 +249,13 @@ import CreateUser from '../components/CreateUser.vue'
         background-color: #f5fffd;
 
         #createOverlayContainer {
-            width: 90%;
-            margin-left: 10%;
+            display: grid;
+            padding-top: 56px;
+            padding-bottom: 20px;
+            align-items: start;
 
-            #createOverlaybackBtn {
-                background-color: #52ab98;
-                color: whitesmoke;
-                margin-top: 2vh;
-                width: 80%;
-                margin-left: 10%;
-                height: 5vh;
+            #userCreate {
+                width: 90vw;
             }
         }
 
@@ -311,6 +303,14 @@ import CreateUser from '../components/CreateUser.vue'
     @media screen and (min-width: 700px) {
         #usersPage {
 
+            #createOverlayContainer {
+                margin-top: 68px;
+
+                #userCreate {
+                    width: 60vw;
+                }
+            }
+
             #usersToolBar {
                 margin-top: 68px;
             }
@@ -332,6 +332,10 @@ import CreateUser from '../components/CreateUser.vue'
             grid-template-columns: 10% 90%;
             grid-template-rows: 10% 90%;
 
+            #createOverlayContainer {
+                margin-top: 0;
+            }
+
             #asideBar {
                 grid-column: 1;
                 position: fixed;
@@ -343,6 +347,11 @@ import CreateUser from '../components/CreateUser.vue'
                 margin-top: 0;
                 margin-left: 10%;
                 width: 90%;
+            }
+
+            #createOverlayContainer {
+                width: 90%;
+                margin-left: 10%;
             }
 
             #usersContainer {

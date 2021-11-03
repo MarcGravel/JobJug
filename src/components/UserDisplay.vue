@@ -10,29 +10,31 @@
                 </v-expansion-panel-header>
                 <v-expansion-panel-content id="expandContent">
                     <hr>
-                    <div id="idBox" class="boxItem">
-                        <h3 class="infoTag">Employee ID:</h3>
-                        <h3 class="infoContent">{{employee.userId}}</h3>
-                    </div>
-                    <div id="nameBox" class="boxItem">
-                        <h3 class="infoTag">Name:</h3>
-                        <h3 class="infoContent">{{employee.name}}</h3>
-                    </div>
-                    <div id="authBox" class="boxItem">
-                        <h3 class="infoTag">Role:</h3>
-                        <h3 class="infoContent">{{employee.authLevel.charAt(0).toUpperCase()}}{{employee.authLevel.substring(1, employee.authLevel.length)}}</h3>
-                    </div>
-                    <div id="emailBox" class="boxItem">
-                        <h3 class="infoTag">Email:</h3>
-                        <h3 class="infoContent">{{employee.email}}</h3>
-                    </div>
-                    <div id="phoneBox" class="boxItem">
-                        <h3 class="infoTag">Phone:</h3>
-                        <h3 class="infoContent">{{employee.phone}}</h3>
-                    </div>
-                    <div id="rateBox" class="boxItem" v-if="user.authLevel != 'employee'">
-                        <h3 class="infoTag">Hourly Rate:</h3>
-                        <h3 class="infoContent">{{employee.hourlyRate}}</h3>
+                    <div id="panelContainer">
+                        <div id="idBox" class="boxItem">
+                            <h3 class="infoTag">Employee ID:</h3>
+                            <h3 class="infoContent">{{employee.userId}}</h3>
+                        </div>
+                        <div id="nameBox" class="boxItem">
+                            <h3 class="infoTag">Name:</h3>
+                            <h3 class="infoContent">{{employee.name}}</h3>
+                        </div>
+                        <div id="authBox" class="boxItem">
+                            <h3 class="infoTag">Role:</h3>
+                            <h3 class="infoContent">{{employee.authLevel.charAt(0).toUpperCase()}}{{employee.authLevel.substring(1, employee.authLevel.length)}}</h3>
+                        </div>
+                        <div id="emailBox" class="boxItem">
+                            <h3 class="infoTag">Email:</h3>
+                            <h3 class="infoContent">{{employee.email}}</h3>
+                        </div>
+                        <div id="phoneBox" class="boxItem">
+                            <h3 class="infoTag">Phone:</h3>
+                            <h3 class="infoContent">{{employee.phone}}</h3>
+                        </div>
+                        <div id="rateBox" class="boxItem" v-if="user.authLevel != 'employee'">
+                            <h3 class="infoTag">Hourly Rate:</h3>
+                            <h3 class="infoContent">{{employee.hourlyRate}}</h3>
+                        </div>
                     </div>
                 </v-expansion-panel-content>
             </v-expansion-panel>
@@ -69,10 +71,10 @@
                     margin-left: 10%;
                     margin-bottom: 2vh;
                 }
-                
+
                 .boxItem > * {
-                    display: inline-block;
-                }
+                        display: inline-block;
+                    }
 
                 .boxItem {
                     margin-bottom: 1vh;
@@ -96,42 +98,48 @@
             #usersExpand {
 
                 #expandContent {
-                    grid-template-columns: 50% 50%;
-                    grid-template-rows: 10% repeat(3, 30%);
                     
                     hr {
                         grid-column: 1 / 3;
                         grid-row: 1;
                     }
 
-                    #idBox {
-                        grid-column: 1;
-                        grid-row: 2;
-                    }
+                    #panelContainer {
+                        width: 100%;
+                        height: 100%;
+                        display: grid;
+                        grid-template-columns: 50% 50%;
+                        grid-template-rows: 10% repeat(3, 30%);
 
-                    #nameBox {
-                        grid-column: 2;
-                        grid-row: 2;
-                    }
+                        #idBox {
+                            grid-column: 1;
+                            grid-row: 2;
+                        }
 
-                    #authBox {
-                        grid-column: 1;
-                        grid-row: 3;
-                    }
+                        #nameBox {
+                            grid-column: 2;
+                            grid-row: 2;
+                        }
 
-                    #emailBox {
-                        grid-column: 2;
-                        grid-row: 3;
-                    }
+                        #authBox {
+                            grid-column: 1;
+                            grid-row: 3;
+                        }
 
-                    #phoneBox {
-                        grid-column: 1;
-                        grid-row: 4;
-                    }
+                        #emailBox {
+                            grid-column: 2;
+                            grid-row: 3;
+                        }
 
-                    #rateBox {
-                        grid-column: 2;
-                        grid-row: 4;
+                        #phoneBox {
+                            grid-column: 1;
+                            grid-row: 4;
+                        }
+
+                        #rateBox {
+                            grid-column: 2;
+                            grid-row: 4;
+                        }
                     }
                 }
             }

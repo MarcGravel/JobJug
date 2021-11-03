@@ -179,12 +179,6 @@
                     :allAssigned="this.assignedUserNames"
                     />
             </div>
-            <!--reloads job info in case user changed values wituhout submitting changes-->
-            <v-btn
-                id="editOverlaybackBtn"
-                @click="editOverlay = !editOverlay, getJobInfo()">
-                Back
-            </v-btn>
         </v-overlay>
         <v-overlay
             id="createOverlayContainer"
@@ -195,11 +189,6 @@
             <div id="jobCreate">
                 <CreateJob @closeOverlay="createOverlay = !createOverlay"/>
             </div>
-            <v-btn
-                id="createOverlaybackBtn"
-                @click="createOverlay = !createOverlay">
-                Back
-            </v-btn>
         </v-overlay>
     </div>
 </template>
@@ -400,39 +389,28 @@ import CreateJob from '../components/CreateJob.vue'
         #editOverlayContainer {
             display: grid;
             margin-top: 56px;
+            height: fit-content;
 
             #jobEdit {
                 width: 90vw;
-                height: fit-content;
             }
 
             #editOverlaybackBtn {
                 background-color: #52ab98;
                 color: whitesmoke;
-                margin-top: 2vh;
+                margin: 2vh 0 2vh 10%;
                 width: 80%;
-                margin-left: 10%;
                 height: 5vh;
             }
         }
 
         #createOverlayContainer {
             display: grid;
-            padding-bottom: 5vh;
             margin-top: 56px;
+            height: fit-content;
 
             #jobCreate {
                 width: 90vw;
-                height: fit-content;
-            }
-
-            #createOverlaybackBtn {
-                background-color: #52ab98;
-                color: whitesmoke;
-                margin-top: 2vh;
-                width: 80%;
-                margin-left: 10%;
-                height: 5vh;
             }
         }
 
@@ -620,6 +598,14 @@ import CreateJob from '../components/CreateJob.vue'
 
         #jobsPage {
 
+            #editOverlayContainer {
+                margin-top: 68px;
+            }
+
+            #createOverlayContainer {
+                margin-top: 68px;
+            }
+
             #jobSearch {
                 margin-top: 68px;
 
@@ -650,10 +636,6 @@ import CreateJob from '../components/CreateJob.vue'
                     }
                 }
             }
-
-            #createOverlayContainer {
-                margin-top: 68px;
-            }
         }
     }
 
@@ -683,11 +665,6 @@ import CreateJob from '../components/CreateJob.vue'
                 #jobCreate {
                     width: 70vw;
                     margin-left: 5%;
-                }
-
-                    #createOverlaybackBtn {
-                    width: 30%;
-                    margin-left: 40%;
                 }
             }
 
