@@ -193,7 +193,6 @@ import router from '../router'
         },
         methods: {
             closeOverlay() {
-                console.log("close");
                 this.$emit("closeOverlay");
             },
             loadAllEmployees() {

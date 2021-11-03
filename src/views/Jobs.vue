@@ -263,7 +263,7 @@ import CreateJob from '../components/CreateJob.vue'
         methods: {
             searchJobs() {
                 if (this.searchInput != '') {
-                    console.log("Empty function @ jobs vue");
+                    console.log("Empty function @ jobs vue. Slated for future implementation.");
                     //Search Algo
                 }
             },

@@ -31,12 +31,12 @@
             </div>
             <div id="userDisplay" v-if="filterValue == 0">
                 <div v-for="employee in allUsers" :key="employee.id">
-                    <UserDisplay :user="user" :employee="employee"/>
+                    <UserDisplay :user="user" :employee="employee" @editUser="editUser"/>
                 </div>
             </div>
             <div id="userDisplay" v-if="filterValue == 1">
                 <div v-for="employee in activeFilter" :key="employee.id">
-                    <UserDisplay :user="user" :employee="employee"/>
+                    <UserDisplay :user="user" :employee="employee" @editUser="editUser"/>
                 </div>
             </div>
         </div>
@@ -48,6 +48,16 @@
             >
             <div id="userCreate">
                 <CreateUser @closeOverlay="createOverlay = !createOverlay" @loadUsers="loadAllUsers"/>
+            </div>
+        </v-overlay>
+        <v-overlay
+            id="editOverlayContainer"
+            :value="editOverlay"
+            opacity="1"
+            :absolute="absolute"
+            >
+            <div id="userEdit">
+                <EditUser :user="user" :editUser="editedUser" @closeOverlay="editOverlay = !editOverlay" @loadUsers="loadAllUsers"/>
             </div>
         </v-overlay>
     </div>
@@ -62,6 +72,7 @@ import AsideBar from '../components/AsideBar.vue'
 import UserDisplay from '../components/UserDisplay.vue'
 import EmployeeToolbar from '../components/EmployeeToolbar.vue'
 import CreateUser from '../components/CreateUser.vue'
+import EditUser from '../components/EditUser.vue'
 
     export default {
         name: "Users",
@@ -70,7 +81,8 @@ import CreateUser from '../components/CreateUser.vue'
             AsideBar,
             UserDisplay,
             EmployeeToolbar,
-            CreateUser
+            CreateUser,
+            EditUser
         },
         computed: {
             sessionCookie() {
@@ -107,14 +119,20 @@ import CreateUser from '../components/CreateUser.vue'
                 activeFilter: [],
                 filterValue: 0,
                 createOverlay: false,
+                editOverlay: false,
                 absolute: true,
                 assignValue: '',
                 assignMenuNames: [],
+                editedUser: {
+
+                },
             }
         },
         methods: {
-            test() {
-                console.log("test");
+            //takes passed data of user from UserDisplay component, sets in data and then passes as a prop to edit component
+            editUser(editUser) {
+                this.editedUser = editUser;
+                this.editOverlay = !this.editOverlay;
             },
             openCreateOverlay() {
                 this.createOverlay = !this.createOverlay;
@@ -259,6 +277,17 @@ import CreateUser from '../components/CreateUser.vue'
             }
         }
 
+        #editOverlayContainer {
+            display: grid;
+            padding-top: 56px;
+            padding-bottom: 20px;
+            align-items: start;
+
+            #userEdit {
+                width: 90vw;
+            }
+        }
+
         #usersToolBar {
             background-color: #2b6777;
             margin-top: 56px;
@@ -266,6 +295,7 @@ import CreateUser from '../components/CreateUser.vue'
             position: fixed;
             width: 100%;
             height: 84px;
+            z-index: 2;
         }
 
         #usersContainer {
@@ -311,6 +341,14 @@ import CreateUser from '../components/CreateUser.vue'
                 }
             }
 
+            #editOverlayContainer {
+                margin-top: 68px;
+
+                #userEdit {
+                    width: 60vw;
+                }
+            }
+
             #usersToolBar {
                 margin-top: 68px;
             }
@@ -333,6 +371,10 @@ import CreateUser from '../components/CreateUser.vue'
             grid-template-rows: 10% 90%;
 
             #createOverlayContainer {
+                margin-top: 0;
+            }
+            
+            #editOverlayContainer {
                 margin-top: 0;
             }
 
