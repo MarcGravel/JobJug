@@ -1,5 +1,6 @@
 <template>
-    <div id="jobsPage">
+    <!--if overlay is open, sets the hide overflow css class for job page to stop page scroll-->
+    <div id="jobsPage" :class="pageOverlayFlow ? 'hideOverflow' : ''">
         <div id="navBar">
             <NavBar :user="user" />
         </div>
@@ -27,7 +28,7 @@
             <v-btn
                 v-if="user.authLevel == 'manager' || user.authLevel == 'admin'"
                 id="createBtn"
-                @click="createOverlay = !createOverlay"
+                @click="createOverlay = !createOverlay; pageOverlayFlow = !pageOverlayFlow"
                 >
                 Create Job
             </v-btn>
@@ -35,7 +36,7 @@
                 <v-btn
                     v-if="user.authLevel == 'manager' || user.authLevel == 'admin'"
                     id="editBtn"
-                    @click="editOverlay = !editOverlay"
+                    @click="editOverlay = !editOverlay; pageOverlayFlow = !pageOverlayFlow"
                     >
                     Edit Job
                 </v-btn>
@@ -175,7 +176,7 @@
             <div id="jobEdit">
                 <EditJobs 
                     :job="this.theJob" 
-                    :updateJobInfo="getJobInfo" @closeOverlay="editOverlay = !editOverlay"
+                    :updateJobInfo="getJobInfo" @closeOverlay="editOverlay = !editOverlay; pageOverlayFlow = !pageOverlayFlow"
                     :allAssigned="this.assignedUserNames"
                     />
             </div>
@@ -187,7 +188,7 @@
             :absolute="absolute"
             >
             <div id="jobCreate">
-                <CreateJob @closeOverlay="createOverlay = !createOverlay"/>
+                <CreateJob @closeOverlay="createOverlay = !createOverlay; pageOverlayFlow = !pageOverlayFlow"/>
             </div>
         </v-overlay>
     </div>
@@ -258,6 +259,8 @@ import CreateJob from '../components/CreateJob.vue'
                 createOverlay: false,
                 assignedUsers: [],
                 assignedUserNames: [],
+                //variabled to activate page class that stops scroll when overlays open
+                pageOverlayFlow: false,
             }
         },
         methods: {
@@ -380,6 +383,12 @@ import CreateJob from '../components/CreateJob.vue'
 </script>
 
 <style lang="scss" scoped>
+
+    #jobsPage.hideOverflow {
+        height: 100vh;
+        overflow-y: hidden;
+    }
+
     #jobsPage {
         width: 100vw;
         min-height: 100%;
@@ -389,28 +398,24 @@ import CreateJob from '../components/CreateJob.vue'
         #editOverlayContainer {
             display: grid;
             margin-top: 56px;
+            min-height: 100%;
             height: fit-content;
 
             #jobEdit {
                 width: 90vw;
-            }
-
-            #editOverlaybackBtn {
-                background-color: #52ab98;
-                color: whitesmoke;
-                margin: 2vh 0 2vh 10%;
-                width: 80%;
-                height: 5vh;
+                margin-bottom: 4vh;
             }
         }
 
         #createOverlayContainer {
             display: grid;
             margin-top: 56px;
+            min-height: 100%;
             height: fit-content;
 
             #jobCreate {
                 width: 90vw;
+                margin-bottom: 4vh;
             }
         }
 

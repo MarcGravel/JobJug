@@ -1,5 +1,6 @@
 <template>
-    <div id="usersPage">
+    <!--if overlay is open, sets the hide overflow css class for job page to stop page scroll-->
+    <div id="usersPage" :class="pageOverlayFlow ? 'hideOverflow' : ''">
         <div id="navBar">
             <NavBar :user="user" />
         </div>
@@ -126,6 +127,7 @@ import EditUser from '../components/EditUser.vue'
                 editedUser: {
 
                 },
+                pageOverlayFlow: false,
             }
         },
         methods: {
@@ -260,6 +262,11 @@ import EditUser from '../components/EditUser.vue'
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Raleway&family=Righteous&display=swap');
 
+    #usersPage.hideOverflow {
+            height: 100vh;
+            overflow-y: hidden;
+        }
+
     #usersPage {
         width: 100%;
         min-height: 100%;
@@ -268,23 +275,27 @@ import EditUser from '../components/EditUser.vue'
 
         #createOverlayContainer {
             display: grid;
-            padding-top: 56px;
-            padding-bottom: 20px;
+            margin-top: 56px;
             align-items: start;
+            min-height: 100%;
+            height: fit-content;
 
             #userCreate {
                 width: 90vw;
+                margin-bottom: 4vh;
             }
         }
 
         #editOverlayContainer {
             display: grid;
-            padding-top: 56px;
-            padding-bottom: 20px;
+            margin-top: 56px;
             align-items: start;
+            min-height: 100%;
+            height: fit-content;
 
             #userEdit {
                 width: 90vw;
+                margin-bottom: 4vh;
             }
         }
 

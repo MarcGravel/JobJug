@@ -306,7 +306,6 @@ import router from '../router'
             justify-self: center;
             width: 80%;
             height: 5vh;
-            margin-bottom: 4vh;
         }
 
         #assignBtn {
