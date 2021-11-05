@@ -29,70 +29,59 @@
                 </v-list>
             </v-menu>
         </div>
-        <div id="createUserBtn" v-if="user.authLevel == 'manager' || user.authLevel == 'admin'">
+        <div id="createClientContainer" v-if="user.authLevel == 'manager' || user.authLevel == 'admin'">
             <v-btn
                 id="createBtn"
-                @click="emitOverlayOpenToUsersView"
+                @click="emitOverlayOpenToClientsView"
                 >
-                Create Employee
+                Create New Client
             </v-btn>
         </div>
         <div id="desktopDividerCSS"></div>
         <h4 id="toolViewTitle">Filter Position: </h4>
-        <div id="employeeStatusContainer">
+        <div id="clientStatusContainer">
             <v-btn
-                id="adminBtn"
-                color="#24a0ed"
-                @click="emitAdminFilter"
+                id="assignedBtn"
+                color="#52ab98"
+                @click="emitAssignedFilter"
                 >
-                Admin
+                Active Clients
             </v-btn>
             <v-btn
-                id="managerBtn"
-                color="#24a0ed"
-                @click="emitManagerFilter"
+                id="pastBtn"
+                color="#52ab98"
+                @click="emitPastFilter"
                 >
-                Manager
+                Past Clients
             </v-btn>
-            <v-btn
-                id="employeeBtn"
-                color="#24a0ed"
-                @click="emitEmployeeFilter"
-                >
-                Employee
-            </v-btn>
-        </div>        
+        </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "EmployeeToolbar",
+        name: "ClientToolbar",
         props: ["user"],
         data() {
             return {
-                sortBoxItems: ["All (Sorted By Name)", "ID", "Position"],
+                sortBoxItems: ["All (Sorted By Name)", "ID", "Company"],
             }
         },
         methods: {
-            //emits admin filter type up to users view
-            emitAdminFilter() {
-                this.$emit("filterUsers", "admin")
+            //emits assigned clients filter type up to users view
+            emitAssignedFilter() {
+                this.$emit("filterClients", "active")
             },
-            //emits manager filter type up to users view
-            emitManagerFilter() {
-                this.$emit("filterUsers", "manager")
-            },
-            //emits employee filter type up to users view
-            emitEmployeeFilter() {
-                this.$emit("filterUsers", "employee")
+            //emits past clients filter type up to users view
+            emitPastFilter() {
+                this.$emit("filterClients", "past")
             },
             //sends emit to same listener as status filter, but passes item name instead
             emitSortFilter(item) {
-                this.$emit("filterUsers", item)
+                this.$emit("filterClients", item)
             },
-            emitOverlayOpenToUsersView() {
-                this.$emit("createUser")
+            emitOverlayOpenToClientsView() {
+                this.$emit("createClient")
             }
         }
     }
@@ -122,7 +111,7 @@
             }
         }
 
-        #createUserBtn {
+        #createClientContainer {
             grid-column: 2;
             grid-row: 1;
             justify-self: end;
@@ -141,24 +130,24 @@
             display: none;
         }
 
-        #employeeStatusContainer {
+        #clientStatusContainer {
             grid-column: 2;
             grid-row: 2;
             width: 100%;
             height: 100%;
             display: grid;
-            grid-template-columns: 33% 33% 33%;
+            grid-template-columns: 50% 50%;
             align-items: center;
             justify-items: center;
 
-            #adminBtn, #managerBtn, #employeeBtn {
+            #assignedBtn, #pastBtn {
                 width: 90%;
                 height: 60%;
                 color: whitesmoke;
                 font-size: 0.7em;
             }
         }
-        
+
         #toolViewTitle {
             grid-row: 2;
             grid-column: 1;
@@ -176,7 +165,7 @@
                 }
             }
 
-            #createUserBtn {                    
+            #createClientContainer { 
                 #createBtn {
                     font-size: 0.7em;
                 }
@@ -191,8 +180,8 @@
                 margin-left: 2vw;
             }
 
-            #employeeStatusContainer {
-                #adminBtn, #managerBtn, #employeeBtn {
+            #clientStatusContainer {
+                #assignedBtn, #pastBtn {
                     width: 70%;
                     font-size: 1em;
                 }
@@ -224,7 +213,7 @@
                 }
             }
 
-            #createUserBtn {
+            #createClientContainer {
             grid-column: 5;
         }
 
@@ -237,11 +226,11 @@
                 justify-self: center;
             }
 
-            #employeeStatusContainer {
+            #clientStatusContainer {
                 grid-row: 1;
                 grid-column: 4;
                 
-                #adminBtn, #managerBtn, #employeeBtn {
+                #assignedBtn, #pastBtn {
                     width: 90%;
                     height: 50%;
                     margin-top: 1vh;

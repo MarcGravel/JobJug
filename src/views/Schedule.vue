@@ -13,17 +13,17 @@
             <h1>Job Schedule: </h1>
             <div v-if="filterValue == 0">
                 <div id="schedDisplay" v-for="job in scheduledJobs" :key="job.id">
-                    <ScheduleJobDisplay :job="job" />
+                    <ScheduleJobDisplay :job="job" :allClients="allClients"/>
                 </div>
             </div>
             <div v-if="filterValue == 1">
                 <div id="schedDisplay" v-for="job in activeFilter" :key="job.id">
-                    <ScheduleJobDisplay :job="job" />
+                    <ScheduleJobDisplay :job="job" :allClients="allClients"/>
                 </div>
             </div>
             <div v-if="filterValue == 2">
                 <div id="schedDisplay" v-for="job in archivedJobs" :key="job.id">
-                    <ScheduleJobDisplay :job="job" />
+                    <ScheduleJobDisplay :job="job" :allClients="allClients"/>
                 </div>
             </div>
         </div>
@@ -78,6 +78,8 @@ import PageFooter from '../components/PageFooter.vue'
 
                     //loads schedule every navigation to check for new/updated jobs
                     this.loadSchedule();
+                    //loads clients to display names on jobs
+                    this.loadAllClients();
                 }
             }
         },
@@ -91,6 +93,7 @@ import PageFooter from '../components/PageFooter.vue'
                 activeFilter: [],
                 //filter value of 0 returns no filtered schedule, 1 returns filter array, 2 returns archived jobs
                 filterValue: 0,
+                allClients: [],
             }
         },
         methods: {
@@ -241,6 +244,20 @@ import PageFooter from '../components/PageFooter.vue'
                     console.log(error.response);
                 })
             },
+            loadAllClients() {
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/clients',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'sessionToken': this.token
+                    }
+                }).then((response) => {
+                    this.allClients = response.data;
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            }
         }
     }
 </script>

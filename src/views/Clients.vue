@@ -1,18 +1,17 @@
 <template>
-    <!--if overlay is open, sets the hide overflow css class for job page to stop page scroll-->
-    <div id="usersPage" :class="pageOverlayFlow ? 'hideOverflow' : ''">
+    <div id="clientsPage">
         <div id="navBar">
             <NavBar :user="user" />
         </div>
         <div id="asideBar">
             <AsideBar :user="user" />
         </div>
-        <div id="usersToolBar"> 
-            <EmployeeToolbar :user="user" @filterUsers="filterUsers" @createUser="openCreateOverlay"/>
+        <div id="clientsToolBar"> 
+            <ClientToolbar :user="user" @filterClients="filterClients" @createClient="openCreateOverlay"/>
         </div>
-        <div id="usersContainer">
-            <h1>Employee List:</h1>
-            <div id="searchEmployee">
+        <div id="clientsContainer">
+            <h1>Client List:</h1>
+            <div id="searchClient">
                 <v-autocomplete
                     v-model="assignValue"
                     :items="assignMenuNames"
@@ -20,24 +19,24 @@
                     filled
                     background-color="#D7F0EB"
                     hide-details
-                    label="Search Employee By Name..."
-                    @keydown.enter="filterUsers(assignValue)"
+                    label="Search Client By Name..."
+                    @keydown.enter="filterClients(assignValue)"
                 ></v-autocomplete>
                 <v-btn
                     id="submitSearch"
-                    @click="filterUsers(assignValue)">
+                    @click="filterClients(assignValue)">
                     Search
                 </v-btn>
-                <hr id="empListSeparate">
+                <hr id="clientListSeparate">
             </div>
-            <div id="userDisplay" v-if="filterValue == 0">
-                <div v-for="employee in allUsers" :key="employee.id">
-                    <UserDisplay :user="user" :employee="employee" @editUser="editUser"/>
+            <div id="clientDisplay" v-if="filterValue == 0">
+                <div v-for="client in allClients" :key="client.id">
+                    <ClientDisplay :user="user" :client="client" @editClient="editClient"/>
                 </div>
             </div>
-            <div id="userDisplay" v-if="filterValue == 1">
-                <div v-for="employee in activeFilter" :key="employee.id">
-                    <UserDisplay :user="user" :employee="employee" @editUser="editUser"/>
+            <div id="clientDisplay" v-if="filterValue == 1">
+                <div v-for="client in activeFilter" :key="client.id">
+                    <ClientDisplay :user="user" :client="client" @editClient="editClient"/>
                 </div>
             </div>
         </div>
@@ -47,9 +46,7 @@
             opacity="1"
             :absolute="absolute"
             >
-            <div id="userCreate">
-                <CreateUser @closeOverlay="createOverlay = !createOverlay" @loadUsers="loadAllUsers"/>
-            </div>
+            <h1>Hi</h1>
         </v-overlay>
         <v-overlay
             id="editOverlayContainer"
@@ -57,9 +54,7 @@
             opacity="1"
             :absolute="absolute"
             >
-            <div id="userEdit">
-                <EditUser :user="user" :editUser="editedUser" @closeOverlay="editOverlay = !editOverlay" @loadUsers="loadAllUsers"/>
-            </div>
+            <h1>Edit</h1>
         </v-overlay>
     </div>
 </template>
@@ -70,20 +65,16 @@ import router from '../router'
 import axios from 'axios'
 import NavBar from '../components/NavBar.vue'
 import AsideBar from '../components/AsideBar.vue'
-import UserDisplay from '../components/UserDisplay.vue'
-import EmployeeToolbar from '../components/EmployeeToolbar.vue'
-import CreateUser from '../components/CreateUser.vue'
-import EditUser from '../components/EditUser.vue'
+import ClientToolbar from '../components/ClientToolbar.vue'
+import ClientDisplay from '../components/ClientDisplay.vue'
 
     export default {
-        name: "Users",
+        name: "Clients",
         components: {
             NavBar,
             AsideBar,
-            UserDisplay,
-            EmployeeToolbar,
-            CreateUser,
-            EditUser
+            ClientToolbar,
+            ClientDisplay
         },
         computed: {
             sessionCookie() {
@@ -100,13 +91,13 @@ import EditUser from '../components/EditUser.vue'
                 }
                 else {
                     this.token = this.sessionCookie.token;
-                    //userId used in
                     this.userId = this.sessionCookie.userId;
 
-                    this.loadAllUsers();
+                    this.loadAllClients();
 
                     if (this.$store.state.userInfo != undefined) {
                         this.user = this.$store.state.userInfo;
+
                     } else {
                         this.loadUserData();
                     }
@@ -118,35 +109,34 @@ import EditUser from '../components/EditUser.vue'
                 user: '',
                 token: '',
                 userId: '',
-                allUsers: [],
+                allClients: [],
+                assignValue: '',
+                assignMenuNames: [],
                 activeFilter: [],
                 filterValue: 0,
+                editedClient: {
+
+                },
                 createOverlay: false,
                 editOverlay: false,
                 absolute: true,
-                assignValue: '',
-                assignMenuNames: [],
-                editedUser: {
-
-                },
-                pageOverlayFlow: false,
             }
         },
         methods: {
-            //takes passed data of user from UserDisplay component, sets in data and then passes as a prop to edit component
-            editUser(editUser) {
-                this.editedUser = editUser;
-                this.editOverlay = !this.editOverlay;
+            //takes passed data of client from clientDisplay component, sets in data and then passes as a prop to edit component
+            editClient(editClient) {
+                this.editedClient = editClient;
+                //need overlay
             },
             openCreateOverlay() {
                 this.createOverlay = !this.createOverlay;
             },
-            filterUsers(type) {
+            filterClients(type) {
                 if (type != null) {
                     //returns list to unfiltered main list
                     if (type == "All (Sorted By Name)") {
                         this.filterValue = 0;
-                        this.loadAllUsers();
+                        this.loadAllClients();
                     }
 
                     else if (type == "ID") {
@@ -154,9 +144,9 @@ import EditUser from '../components/EditUser.vue'
                         this.activeFilter = [];
 
                         //sorting algorithm to sort by ID
-                        this.activeFilter = this.allUsers.sort(function(a,b) {
-                            let keyA = a.userId,
-                                keyB = b.userId;
+                        this.activeFilter = this.allClients.sort(function(a,b) {
+                            let keyA = a.clientId,
+                                keyB = b.clientId;
                             
                             if (keyA < keyB) return -1;
                             if (keyA > keyB) return 1;
@@ -166,14 +156,14 @@ import EditUser from '../components/EditUser.vue'
                         this.filterValue = 1;
                     }
 
-                    else if (type == "Position") {
+                    else if (type == "Company") {
                         // clear filter
                         this.activeFilter = [];
 
-                        //sorting algorithm by position 
-                        this.activeFilter = this.allUsers.sort(function(a,b) {
-                            let keyA = a.authLevel,
-                                keyB = b.authLevel;
+                        //sorting algorithm to sort by ID
+                        this.activeFilter = this.allClients.sort(function(a,b) {
+                            let keyA = a.company,
+                                keyB = b.company;
                             
                             if (keyA < keyB) return -1;
                             if (keyA > keyB) return 1;
@@ -183,17 +173,38 @@ import EditUser from '../components/EditUser.vue'
                         this.filterValue = 1;
                     }
 
-                    else if (type == "admin" || type == "employee" || type == "manager") {
+                    else if (type == "active" || type == "past") {
                         //clears filter variable
                         this.activeFilter = [];
-                        
-                        //filter all employees based on auth level
 
-                        for (let i=0; i < this.allUsers.length; i++) {
-                            if (this.allUsers[i].authLevel == type) {
-                                this.activeFilter.push(this.allUsers[i])
+                        //make job api call to cross check client Id's on all jobs
+                        //this checks if the clients are currently active or are past clients only
+                        axios.request({
+                            url: process.env.VUE_APP_API_SITE+'/api/jobs',
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'sessionToken': this.token
+                            },
+                        }).then((response) => {
+                            if (type == "active") {
+                                //get list of clients that are assigned to a current job by cross checking values of client id.
+                                //.some tests whether an element in the array passes the check if client id matches in each array
+                                let activeClients = this.allClients.filter(o1 => response.data.some(o2 => o1.clientId == o2.clientId));
+                                
+                                //remove duplicate clients (v = value, i = index, a = array)
+                                this.activeFilter = activeClients.filter((v,i,a) => a.findIndex(t => (t.clientId == v.clientId)) == i);
                             }
-                        }
+                            else {
+                                //same algo but with the not ( ! ) check at the .some
+                                let activeClients = this.allClients.filter(o1 => !response.data.some(o2 => o1.clientId == o2.clientId));
+                                
+                                //remove duplicate clients (v = value, i = index, a = array)
+                                this.activeFilter = activeClients.filter((v,i,a) => a.findIndex(t => (t.clientId == v.clientId)) == i);
+                            }
+                        }).catch((error) => {
+                            console.log(error + ' error');
+                        })
 
                         //switches user display to filtered view
                         this.filterValue = 1;
@@ -204,9 +215,9 @@ import EditUser from '../components/EditUser.vue'
                         //clears filter variable
                         this.activeFilter = [];
 
-                        for (let i=0; i < this.allUsers.length; i++) {
-                            if (this.allUsers[i].name == type) {
-                                this.activeFilter.push(this.allUsers[i])
+                        for (let i=0; i < this.allClients.length; i++) {
+                            if (this.allClients[i].name == type) {
+                                this.activeFilter.push(this.allClients[i])
                             }
                         }
 
@@ -232,17 +243,17 @@ import EditUser from '../components/EditUser.vue'
                     console.log(error.response);
                 })
             },
-            loadAllUsers() {
+            loadAllClients() {
                 axios.request({
-                    url: process.env.VUE_APP_API_SITE+'/api/users',
+                    url: process.env.VUE_APP_API_SITE+'/api/clients',
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         'sessionToken': this.token
-                    },
+                    }
                 }).then((response) => {
-                    //default order of users by first name.
-                    this.allUsers = response.data.sort(function(a,b) {
+                    //default order of clients by first name.
+                    this.allClients = response.data.sort(function(a,b) {
                         let keyA = a.name,
                             keyB = b.name;
 
@@ -250,14 +261,14 @@ import EditUser from '../components/EditUser.vue'
                         if (keyA > keyB) return 1;
                     });
 
-                    //add employee names to menu list
-                    for(let i = 0; i < this.allUsers.length; i++) {
-                        this.assignMenuNames.push(this.allUsers[i].name)
+                    //add client names to menu list
+                    for(let i = 0; i < this.allClients.length; i++) {
+                        this.assignMenuNames.push(this.allClients[i].name);
                     }
                 }).catch((error) => {
                     console.log(error.response);
                 })
-            },
+            }
         }
     }
 </script>
@@ -265,44 +276,18 @@ import EditUser from '../components/EditUser.vue'
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Raleway&family=Righteous&display=swap');
 
-    #usersPage.hideOverflow {
-            height: 100vh;
-            overflow-y: hidden;
-        }
+    #clientsPage.hideOverflow {
+        height: 100vh;
+        overflow-y: hidden;
+    }
 
-    #usersPage {
+    #clientsPage {
         width: 100%;
         min-height: 100vh;
         height: fit-content;
         background-color: #f5fffd;
 
-        #createOverlayContainer {
-            display: grid;
-            margin-top: 56px;
-            align-items: start;
-            min-height: 100%;
-            height: fit-content;
-
-            #userCreate {
-                width: 90vw;
-                margin-bottom: 4vh;
-            }
-        }
-
-        #editOverlayContainer {
-            display: grid;
-            margin-top: 56px;
-            align-items: start;
-            min-height: 100%;
-            height: fit-content;
-
-            #userEdit {
-                width: 90vw;
-                margin-bottom: 4vh;
-            }
-        }
-
-        #usersToolBar {
+        #clientsToolBar {
             background-color: #2b6777;
             margin-top: 56px;
             color: whitesmoke;
@@ -312,7 +297,7 @@ import EditUser from '../components/EditUser.vue'
             z-index: 2;
         }
 
-        #usersContainer {
+        #clientsContainer {
             margin-top: 140px;
 
             h1 {
@@ -322,7 +307,7 @@ import EditUser from '../components/EditUser.vue'
                 margin-top: 3vh;
             }
 
-            #searchEmployee {
+            #searchClient {
                 display: grid;
 
                 #submitSearch {
@@ -334,7 +319,7 @@ import EditUser from '../components/EditUser.vue'
                 }
             }
 
-            #empListSeparate {
+            #clientListSeparate {
                 border: 1px solid #2b6777;
                 width: 60%;
                 justify-self: center;
@@ -345,12 +330,12 @@ import EditUser from '../components/EditUser.vue'
     }
 
     @media screen and (min-width: 700px) {
-        #usersPage {
+        #clientsPage {
 
             #createOverlayContainer {
                 margin-top: 68px;
 
-                #userCreate {
+                #clientCreate {
                     width: 60vw;
                 }
             }
@@ -358,19 +343,19 @@ import EditUser from '../components/EditUser.vue'
             #editOverlayContainer {
                 margin-top: 68px;
 
-                #userEdit {
+                #clientEdit {
                     width: 60vw;
                 }
             }
 
-            #usersToolBar {
+            #clientsToolBar {
                 margin-top: 68px;
             }
 
-            #usersContainer {
+            #clientsContainer {
                 display: grid;
 
-                #userDisplay, #searchEmployee {
+                #clientDisplay, #searchclient {
                     width: 80%;
                     justify-self: center;
                 }
@@ -379,7 +364,7 @@ import EditUser from '../components/EditUser.vue'
     }
 
     @media screen and (min-width: 1100px) {
-        #usersPage {
+        #clientsPage {
             display: grid;
             grid-template-columns: 10% 90%;
             grid-template-rows: 10% 90%;
@@ -399,7 +384,7 @@ import EditUser from '../components/EditUser.vue'
                 z-index: 99;
             }
 
-            #usersToolBar {
+            #clientsToolBar {
                 margin-top: 0;
                 margin-left: 10%;
                 width: 90%;
@@ -410,7 +395,7 @@ import EditUser from '../components/EditUser.vue'
                 margin-left: 10%;
             }
 
-            #usersContainer {
+            #clientsContainer {
                 grid-row: 2;
                 grid-column: 2;
                 margin-top: 0;
@@ -421,7 +406,7 @@ import EditUser from '../components/EditUser.vue'
                     margin-top: 2vh;
                 }
 
-                #searchEmployee {
+                #searchClient {
                     width: 70%;
                     justify-self: start;
                     margin-left: 4vw;
@@ -432,7 +417,7 @@ import EditUser from '../components/EditUser.vue'
                     }
                 }
 
-                #userDisplay {
+                #clientDisplay {
                     width: 70%;
                     justify-self: start;
                     margin-left: 4vw;
@@ -440,4 +425,5 @@ import EditUser from '../components/EditUser.vue'
             }
         }
     }
+
 </style>

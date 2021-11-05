@@ -15,7 +15,7 @@
             <v-text-field
                 v-model="updJob.clientId"
                 :rules="clientRules"
-                label="Client Name"
+                label="Client's Id Number"
             ></v-text-field>
             <v-text-field
                 v-model="updJob.scheduledDate"
@@ -274,9 +274,44 @@ import router from '../router'
                     data: this.updJob
                 }).then((response) => {
                     console.log(response.data[0]);
-                        this.$emit("updateJobInfo");
-                        this.$emit("closeOverlay");
-                        router.go();
+                    //remove assignment if client id changed then add new assignment
+                    if (this.updJob.clientId != this.job.clientId) {
+                        axios.request({
+                        url: process.env.VUE_APP_API_SITE+'/api/cliass',
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        data: {
+                            "sessionToken": token,
+                            "clientId": this.job.clientId,
+                            "jobId": this.job.jobId,
+                        }
+                        }).then(() => {
+                        }).catch((error) => {
+                            console.log(error.response);
+                        }),
+
+                        axios.request({
+                        url: process.env.VUE_APP_API_SITE+'/api/cliass',
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        data: {
+                            "sessionToken": token,
+                            "clientId": this.updJob.clientId,
+                            "jobId": this.job.jobId,
+                        }
+                        }).then(() => {
+                        }).catch((error) => {
+                            console.log(error.response);
+                        })
+                    }
+
+                    this.$emit("updateJobInfo");
+                    this.$emit("closeOverlay");
+                    router.go();
                 }).catch((error) => {
                     console.log(error.response);
                 })

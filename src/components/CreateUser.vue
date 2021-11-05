@@ -89,9 +89,6 @@ import axios from 'axios'
 
     export default {
         name: "CreateUser",
-        beforeMount() {
-            this.loadAllEmployees();
-        },
         data() {
             return {
                 allEmployees: [],
@@ -137,23 +134,6 @@ import axios from 'axios'
         methods: {
             closeOverlay() {
                 this.$emit("closeOverlay")
-            },
-            loadAllEmployees() {
-                let session = cookies.get('session');
-                let token = session.token;
-
-                axios.request({
-                    url: process.env.VUE_APP_API_SITE+'/api/users',
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'sessionToken': token
-                    },
-                }).then((response) => {
-                    this.allEmployees = response.data
-                }).catch((error) => {
-                    console.log(error.response);
-                })
             },
             sendNewUserData() {
                 let session = cookies.get('session');

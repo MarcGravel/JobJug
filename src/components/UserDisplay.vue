@@ -46,7 +46,6 @@
                 </v-expansion-panel-content>
             </v-expansion-panel>
         </v-expansion-panels>
-
     </div>
 </template>
 
@@ -54,11 +53,6 @@
     export default {
         name: "UserDisplay",
         props: ["user", "employee"],
-        data() {
-            return {
-                
-            }
-        },
         methods: {
             editUser() {
                 this.$emit("editUser", this.employee);

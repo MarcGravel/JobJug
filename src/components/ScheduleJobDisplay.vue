@@ -9,7 +9,7 @@
             <v-card-title id="title" v-else>{{job.title}}</v-card-title>
             <v-btn id="viewJob" @click="navDynaJobPage">View Job</v-btn>
             <v-card-subtitle id="schedDate">Job Date: {{job.scheduledDate}}</v-card-subtitle>
-            <v-card-subtitle id= "client">Client: {{job.clientId}}</v-card-subtitle>
+            <v-card-subtitle id= "client">Client: {{getClientName}}</v-card-subtitle>
             <div id="status">
                 <v-card-subtitle id="statusTag">Status: </v-card-subtitle>
                 <h5 id="activeJob" v-if="job.jobStatus == 'active' ">Active</h5>
@@ -23,7 +23,18 @@
 <script>
     export default {
         name: "ScheduleJobDisplay",
-        props: ["job"],
+        props: ["job", "allClients"],
+        computed: {
+            getClientName() {
+                let clientName;
+                for (let i = 0; i < this.allClients.length; i++) {
+                    if (this.job.clientId == this.allClients[i].clientId) {
+                        clientName = this.allClients[i].name;
+                    }
+                }
+                return clientName;
+            }
+        },
         methods: {
             navDynaJobPage() {
                 this.$router.push('/jobs/'+this.job.jobId);

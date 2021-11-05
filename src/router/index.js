@@ -4,6 +4,7 @@ import Login from '../views/Login.vue'
 import Schedule from '../views/Schedule.vue'
 import Jobs from '../views/Jobs.vue'
 import Users from '../views/Users.vue'
+import Clients from '../views/Clients.vue'
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,11 @@ const routes = [
     path: '/users',
     name: 'Users',
     component: Users
+  },
+  {
+    path: '/clients',
+    name: 'Clients',
+    component: Clients
   },
 ]
 

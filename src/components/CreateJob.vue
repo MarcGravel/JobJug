@@ -265,15 +265,31 @@ import router from '../router'
                                 "userId": this.assigned_emp_data.userId,
                                 "jobId": response.data[0].jobId,
                             }
+                            }).then(() => {
+                            }).catch((error) => {
+                                console.log(error.response);
+                            })
+                    }
+                    //assign job to client
+                    if (this.newJob.clientId != undefined || this.newJob.clientId != "") {
+                        axios.request({
+                        url: process.env.VUE_APP_API_SITE+'/api/cliass',
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        data: {
+                            "sessionToken": token,
+                            "clientId": this.newJob.clientId,
+                            "jobId": response.data[0].jobId,
+                        }
                         }).then(() => {
-                            router.push('/jobs/'+response.data[0].jobId)
                         }).catch((error) => {
                             console.log(error.response);
                         })
                     }
-                    else {
-                        router.push('/jobs/'+response.data[0].jobId)
-                    }
+
+                    router.push('/jobs/'+response.data[0].jobId)
                 }).catch((error) => {
                     console.log(error.response);
                 })

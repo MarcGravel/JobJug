@@ -65,7 +65,7 @@
                     <h4 class="infoTag">
                         Client Name:
                     </h4>
-                    <h3 class="infoContent">{{theJob.clientId}}</h3>
+                    <h3 class="infoContent">{{currentClient.name}}</h3>
                     <hr class="midHr">
                 </div>
                 <div id="assignedInfo" class="infoDivs">
@@ -239,6 +239,8 @@ import CreateJob from '../components/CreateJob.vue'
                     if (this.jobId != undefined) {
                         this.getJobInfo();
                         this.getAssignedUsers();
+                        //loads clients to display names on jobs
+                        this.loadCurrentClients();
                     }
                 }
             }
@@ -261,6 +263,7 @@ import CreateJob from '../components/CreateJob.vue'
                 assignedUserNames: [],
                 //variabled to activate page class that stops scroll when overlays open
                 pageOverlayFlow: false,
+                currentClient: '',
             }
         },
         methods: {
@@ -374,6 +377,26 @@ import CreateJob from '../components/CreateJob.vue'
                 }).then((response) => {
                     console.log(response.data[0]);
                     this.getJobInfo();
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            },
+            loadCurrentClients() {
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/cliass',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'sessionToken': this.token
+                    },
+                    params: {
+                        "jobId": this.jobId
+                    }
+                }).then((response) => {
+                    if(response.data[0] != undefined) {
+                        this.currentClient = response.data[0]
+                    }
+                    
                 }).catch((error) => {
                     console.log(error.response);
                 })
