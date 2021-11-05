@@ -46,7 +46,7 @@
             opacity="1"
             :absolute="absolute"
             >
-            <div id="userCreate">
+            <div id="clientCreate">
                 <CreateClient @closeOverlay="createOverlay = !createOverlay" @loadClients="loadAllClients"/>
             </div>
         </v-overlay>
@@ -56,7 +56,9 @@
             opacity="1"
             :absolute="absolute"
             >
-            <h1>Edit</h1>
+            <div id="clientEdit">
+                <EditClient :editClient="editedClient" @closeOverlay="editOverlay = !editOverlay" @loadClients="loadAllClients"/>
+            </div>
         </v-overlay>
     </div>
 </template>
@@ -70,6 +72,7 @@ import AsideBar from '../components/AsideBar.vue'
 import ClientToolbar from '../components/ClientToolbar.vue'
 import ClientDisplay from '../components/ClientDisplay.vue'
 import CreateClient from '../components/CreateClient.vue'
+import EditClient from '../components/EditClient.vue'
 
     export default {
         name: "Clients",
@@ -78,7 +81,8 @@ import CreateClient from '../components/CreateClient.vue'
             AsideBar,
             ClientToolbar,
             ClientDisplay,
-            CreateClient
+            CreateClient,
+            EditClient
         },
         computed: {
             sessionCookie() {
@@ -130,7 +134,7 @@ import CreateClient from '../components/CreateClient.vue'
             //takes passed data of client from clientDisplay component, sets in data and then passes as a prop to edit component
             editClient(editClient) {
                 this.editedClient = editClient;
-                //need overlay
+                this.editOverlay = !this.editOverlay;
             },
             openCreateOverlay() {
                 this.createOverlay = !this.createOverlay;
@@ -291,6 +295,28 @@ import CreateClient from '../components/CreateClient.vue'
         height: fit-content;
         background-color: #f5fffd;
 
+        #createOverlayContainer {
+            display: grid;
+            margin-top: 56px;
+            align-items: start;
+
+            #clientCreate {
+                width: 90vw;
+                margin-bottom: 4vh;
+            }
+        }
+
+        #editOverlayContainer {
+            display: grid;
+            margin-top: 56px;
+            align-items: start;
+
+            #clientEdit {
+                width: 90vw;
+                margin-bottom: 4vh;
+            }
+        }
+
         #clientsToolBar {
             background-color: #2b6777;
             margin-top: 56px;
@@ -375,10 +401,18 @@ import CreateClient from '../components/CreateClient.vue'
 
             #createOverlayContainer {
                 margin-top: 0;
+
+                #clientCreate {
+                    margin-top: 10vh;
+                }
             }
             
             #editOverlayContainer {
                 margin-top: 0;
+
+                #clientEdit {
+                    margin-top: 10vh;
+                }
             }
 
             #asideBar {

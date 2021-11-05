@@ -148,14 +148,16 @@
     @media screen and (min-width: 1100px) {
         #grid{
             #container {
-                grid-template-columns: 40% 30% 15% 15%;
+                grid-template-columns: 30% 25% 30% 15%;
                 grid-template-rows: 50% 50%;
                 height: 10vh;
+                width: 99%;
                 margin-bottom: 2vh;
 
                 #title {
                     grid-column: 1;
                     grid-row: 1;
+                    font-size: 1.7em;
                 }
 
                 #viewJob {
@@ -172,6 +174,7 @@
                     align-self: center;
                     margin-left: 0;
                     margin-bottom: 0;
+                    font-size: 1.3em;
                 }
 
                 #status {
@@ -187,6 +190,27 @@
                     align-self: center;
                     margin-left: 0;
                     margin-bottom: 0;
+                    font-size: 1.3em;
+                }
+            }
+        }
+    }
+
+    @media screen and (min-width: 1350px) { 
+        #grid{
+            #container {
+                width: 95%;
+
+                #title {
+                    font-size: 2em;
+                }
+
+                #schedDate {
+                    font-size: 1.5em;
+                }
+
+                #client {
+                    font-size: 1.3em;
                 }
             }
         }

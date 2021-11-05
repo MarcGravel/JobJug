@@ -305,6 +305,7 @@ import PageFooter from '../components/PageFooter.vue'
             }
 
             #toolBar {
+                grid-column: 2;
                 height: fit-content;
             }
 

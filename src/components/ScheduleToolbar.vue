@@ -178,7 +178,7 @@
             margin-top: 68px;
 
             #sortByContainer {
-                margin-left: 2vw;
+                margin-left: 1.5vw;
             }
 
             #jobStatusContainer {

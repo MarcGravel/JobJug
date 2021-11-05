@@ -14,7 +14,7 @@
                 :rules="[emailRules.required, emailRules.length, emailRules.valid]"
                 label="Email"
             ></v-text-field>
-            <v-text-field v-if="user.authLevel == 'admin'"
+            <v-text-field v-if="user.authLevel == 'admin' || user.userId == editUser.userId"
                 v-model="updUser.password"
                 :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show1 ? 'text' : 'password'"

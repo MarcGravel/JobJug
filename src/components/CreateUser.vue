@@ -91,7 +91,6 @@ import axios from 'axios'
         name: "CreateUser",
         data() {
             return {
-                allEmployees: [],
                 newUser: {
                     authLevel: '',
                     name: '',
