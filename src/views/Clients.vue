@@ -46,7 +46,9 @@
             opacity="1"
             :absolute="absolute"
             >
-            <h1>Hi</h1>
+            <div id="userCreate">
+                <CreateClient @closeOverlay="createOverlay = !createOverlay" @loadClients="loadAllClients"/>
+            </div>
         </v-overlay>
         <v-overlay
             id="editOverlayContainer"
@@ -67,6 +69,7 @@ import NavBar from '../components/NavBar.vue'
 import AsideBar from '../components/AsideBar.vue'
 import ClientToolbar from '../components/ClientToolbar.vue'
 import ClientDisplay from '../components/ClientDisplay.vue'
+import CreateClient from '../components/CreateClient.vue'
 
     export default {
         name: "Clients",
@@ -74,7 +77,8 @@ import ClientDisplay from '../components/ClientDisplay.vue'
             NavBar,
             AsideBar,
             ClientToolbar,
-            ClientDisplay
+            ClientDisplay,
+            CreateClient
         },
         computed: {
             sessionCookie() {
