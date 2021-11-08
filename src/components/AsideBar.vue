@@ -5,7 +5,7 @@
                 <img src="@/assets/jobjugLogo.png" alt="Logo">
             </div>
             <div id="curUser">
-                <h3>{{user.name}}</h3>
+                <ChangePassword :user="user"/>
             </div>
             <div id="menuItems">
                 <v-list-item id="listItem"
@@ -26,10 +26,14 @@
 import router from '../router'
 import cookies from 'vue-cookies'
 import axios from 'axios'
+import ChangePassword from '../components/ChangePassword.vue'
 
     export default {
         name: "AsideBar",
         props: ["user"],
+        components: {
+            ChangePassword
+        },
         data() {
             return {
                 items: [

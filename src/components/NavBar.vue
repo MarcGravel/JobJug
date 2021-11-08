@@ -8,7 +8,7 @@
                 <h2>JobJug</h2>
             </div>
             <div id="curUser">
-                <h5>{{user.name}}</h5>
+                <ChangePassword :user="user"/>
             </div>
         </div>
 
@@ -45,10 +45,14 @@
 import axios from 'axios'
 import cookies from 'vue-cookies'
 import router from '../router'
+import ChangePassword from '../components/ChangePassword.vue'
 
     export default {
         name: "NavBar",
         props: ["user"],
+        components: {
+            ChangePassword
+        },
         data() {
             return {
                 hambIcon: "menu",
