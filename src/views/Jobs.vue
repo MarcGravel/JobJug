@@ -114,6 +114,7 @@
                         <h3 class="infoContent">Yes</h3>
                         <v-btn
                             id="viewInvoiceBtn"
+                            @click="sendViewInvoiceFile"
                             >
                             View Invoice
                         </v-btn>
@@ -121,11 +122,37 @@
                     <div v-else id="noInvoiceContent">
                         <h3 class="infoContent">No</h3>
                         <v-btn
+                            v-if="invoiceAlert == false"
                             id="invoiceBtn"
                             :disabled="invoiceBtnDisabled"
+                            @click="invoiceAlert = !invoiceAlert"
                             >
                             Invoice
                         </v-btn>
+                        <v-alert
+                            id="alertBox"
+                            :value="invoiceAlert"
+                            color="#52ab98"
+                            dark
+                            border="bottom"
+                            icon="mdi-alert-circle-outline"
+                            transition="scale-transition"
+                            >
+                                <h4>Please ensure all information is correct. By clicking Invoice below you will send the invoice directly to the client.</h4>
+                                <v-btn
+                                    id="confirmInvoiceBtn"
+                                    :disabled="invoiceBtnDisabled"
+                                    @click="sendInvoice"
+                                    >
+                                    Invoice
+                                </v-btn>
+                                <v-btn
+                                    id="cancelInvoiceBtn"
+                                    @click="invoiceAlert = !invoiceAlert"
+                                    >
+                                    Cancel
+                                </v-btn>
+                            </v-alert>
                     </div>
                     <hr class="midHr">
                 </div>
@@ -202,6 +229,7 @@ import NavBar from '../components/NavBar.vue'
 import AsideBar from '../components/AsideBar.vue'
 import EditJobs from '../components/EditJobs.vue'
 import CreateJob from '../components/CreateJob.vue'
+import download from 'downloadjs'
 
     export default {
         name: "Jobs",
@@ -264,9 +292,69 @@ import CreateJob from '../components/CreateJob.vue'
                 //variabled to activate page class that stops scroll when overlays open
                 pageOverlayFlow: false,
                 currentClient: '',
+                invoiceAlert: false,
             }
         },
         methods: {
+            sendInvoice() {
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/invoice',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: {
+                        "sessionToken": this.token,
+                        "jobId": this.jobId,
+                        "title": this.theJob.title,
+                        "content": this.theJob.content,
+                        "chargedAmount": this.theJob.charged
+                    }
+                }).then((response) => {
+                    console.log(response.data);
+                    this.invoiceAlert = !this.invoiceAlert
+
+                    //update invoiced column in current job to true
+                    axios.request({
+                        url: process.env.VUE_APP_API_SITE+'/api/jobs',
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        data: {
+                            "sessionToken": this.token,
+                            "jobId": this.jobId,
+                            "invoiced": "1"
+                        }
+                    }).then(() => {
+                        this.getJobInfo();
+                    }).catch((error) => {
+                        console.log(error.response);
+                    })
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            },
+            sendViewInvoiceFile() {
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/invoice',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'sessionToken': this.token
+                    },
+                    responseType: 'blob',
+                    params: {
+                        'jobId': this.jobId
+                    }
+                }).then((response) => {
+                    console.log(response);
+                    let content = response.headers["content-type"];
+                    download(response.data, "invoice.pdf", content);
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            },
             searchJobs() {
                 if (this.searchInput != '') {
                     console.log("Empty function @ jobs vue. Slated for future implementation.");
@@ -310,8 +398,12 @@ import CreateJob from '../components/CreateJob.vue'
                     this.theJob.cost = (Math.round(this.theJob.cost * 100) /100).toFixed(2);
                     this.theJob.charged = (Math.round(this.theJob.charged * 100) /100).toFixed(2);
 
-                    if (this.theJob.charged != 0.00) {
+                    if (this.theJob.charged != 0.00 || this.theJob.charged == undefined) {
                         this. invoiceBtnDisabled = false;
+                    }
+
+                    if (this.theJob.jobStatus == "active") {
+                        this.invoiceBtnDisabled = true;
                     }
 
                     if (this.theJob.jobStatus == 'completed' || this.theJob.jobStatus == 'archived') {
@@ -374,8 +466,7 @@ import CreateJob from '../components/CreateJob.vue'
                         "jobId": this.jobId,
                         "jobStatus": "completed"
                     }
-                }).then((response) => {
-                    console.log(response.data[0]);
+                }).then(() => {
                     this.getJobInfo();
                 }).catch((error) => {
                     console.log(error.response);
@@ -393,6 +484,9 @@ import CreateJob from '../components/CreateJob.vue'
                         "jobId": this.jobId
                     }
                 }).then((response) => {
+                    if (response.data[0] == undefined) {
+                        this.invoiceBtnDisabled=true;
+                    }
                     if(response.data[0] != undefined) {
                         this.currentClient = response.data[0]
                     }
@@ -565,6 +659,22 @@ import CreateJob from '../components/CreateJob.vue'
                         background-color: #f47174;
                         color: whitesmoke;
                     }
+
+                    #alertBox {
+
+                        #confirmInvoiceBtn {
+                            background-color: #f47174;
+                            color: whitesmoke;
+                            margin-right: 4vw;
+                            margin-top: 2vh;
+                        }
+
+                        #cancelInvoiceBtn {
+                            background-color: black;
+                            color: whitesmoke;
+                            margin-top: 2vh;
+                        }
+                    }
                 }
 
                 #invoiceContent {
@@ -662,6 +772,18 @@ import CreateJob from '../components/CreateJob.vue'
                     #completeJobBtn {
                         height: 8vh;
                     }
+
+                    #noInvoiceContent {
+                        #invoiceBtn {
+                            margin-left: 4vw;
+                        }
+                    }
+
+                    #invoiceContent {
+                        #viewInvoiceBtn {
+                            margin-left: 4vw;
+                        }
+                    }
                 }
             }
         }
@@ -728,6 +850,33 @@ import CreateJob from '../components/CreateJob.vue'
 
                     #completeJobBtn {
                         height: 5vh;
+                    }
+
+                    #noInvoiceContent {
+                        #invoiceBtn {
+                            margin-left: 2vw;
+                        }
+                    }
+
+                    #invoiceContent {
+                        #viewInvoiceBtn {
+                            margin-left: 2vw;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    @media screen and (min-width: 1500px) { 
+        #jobsPage{
+            #jobsContainer {
+                #jobInfo {
+                    #noInvoiceContent { 
+                        #alertBox {
+                            margin-left: 1vw;
+                        }
                     }
                 }
             }
