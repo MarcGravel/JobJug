@@ -1,7 +1,13 @@
 <template>
     <div>
         <v-form id="editForm" v-model="formValid">
-            <h1 id="formTitle">Edit User</h1>
+            <h1 id="formTitle">Edit Employee</h1>
+            <v-btn id="deleteEmpBtn"
+                color="error" 
+                @click="removeEmployee"
+                >
+                    Delete Employee
+            </v-btn>
             <v-text-field
                 v-model="updUser.name"
                 placeholder="Limit 60 characters"
@@ -122,6 +128,28 @@ import cookies from 'vue-cookies'
             closeOverlay() {
                 this.$emit("closeOverlay");
             },
+            removeEmployee() {
+                let session = cookies.get('session');
+                let token = session.token;
+
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/users',
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: {
+                        "sessionToken": token,
+                        "userId": this.editUser.userId
+                    }
+                }).then(() => {
+                    this.$emit("closeOverlay")
+                    this.$emit("loadUsers")
+                }).catch((error) => {
+                    console.log(error.response.data);
+                    this.errorMsg = "Unauthorized to delete admins";
+                })
+            },
             sendUpdUserData() {
                 let session = cookies.get('session');
                 let token = session.token;
@@ -175,6 +203,12 @@ import cookies from 'vue-cookies'
         #formTitle {
             justify-self: center;
             color: #52ab98;
+        }
+
+        #deleteEmpBtn {
+            justify-self: end;
+            width: fit-content;
+            margin-bottom: 2vh;
         }
 
         #saveUpdateBtn {

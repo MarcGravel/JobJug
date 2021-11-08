@@ -2,6 +2,12 @@
     <div>
         <v-form id="editForm" v-model="formValid">
             <h1 id="formTitle">Edit Client</h1>
+            <v-btn id="deleteClientBtn"
+                color="error" 
+                @click="removeClient()"
+                >
+                    Delete Client
+            </v-btn>
             <v-text-field
                 v-model="updClient.name"
                 placeholder="Limit 60 characters"
@@ -87,6 +93,27 @@ import cookies from 'vue-cookies'
             closeOverlay() {
                 this.$emit("closeOverlay")
             },
+            removeClient() {
+                let session = cookies.get('session');
+                let token = session.token;
+
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/clients',
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: {
+                        "sessionToken": token,
+                        "clientId": this.editClient.clientId
+                    }
+                }).then(() => {
+                    this.$emit("closeOverlay")
+                    this.$emit("loadClients")
+                }).catch((error) => {
+                    console.log(error.response.data);
+                })
+            },
             sendUpdClientData() {
                 let session = cookies.get('session');
                 let token = session.token;
@@ -120,6 +147,12 @@ import cookies from 'vue-cookies'
         #formTitle {
             justify-self: center;
             color: #52ab98;
+        }
+
+        #deleteClientBtn {
+            justify-self: end;
+            width: fit-content;
+            margin-bottom: 2vh;
         }
 
         #saveUpdateBtn {
