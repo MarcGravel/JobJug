@@ -10,19 +10,22 @@
         <div id="jobSearch">
             <h1>Search Jobs</h1>
             <div id="searchElement">
-                <v-text-field
-                    label="Seach jobs here..."
-                    v-model="searchInput"
-                    outlined
+                <v-autocomplete
+                    v-model="assignValue"
+                    :items="assignMenuNames"
+                    dense
+                    filled
                     dark
+                    background-color="#368196"
                     hide-details
-                    >
-                </v-text-field>
+                    label="Search Jobs By Name..."
+                    @keydown.enter="searchJobs(assignValue)"
+                ></v-autocomplete>
             </div>
             <v-btn
                 id="searchBtn"
                 color="primary"
-                @click="searchJobs">
+                @click="searchJobs(assignValue)">
                 Search
             </v-btn>
             <v-btn
@@ -258,6 +261,8 @@ import download from 'downloadjs'
                     this.token = this.sessionCookie.token;
                     this.userId = this.sessionCookie.userId;
 
+                    this.loadJobNamesForSearch();
+
                     if (this.$store.state.userInfo != undefined) {
                         this.user = this.$store.state.userInfo;
                     } else {
@@ -293,6 +298,9 @@ import download from 'downloadjs'
                 pageOverlayFlow: false,
                 currentClient: '',
                 invoiceAlert: false,
+                assignValue: '',
+                assignMenuNames: [],
+                assignMenuJobIds: []
             }
         },
         methods: {
@@ -355,10 +363,31 @@ import download from 'downloadjs'
                     console.log(error.response);
                 })
             },
-            searchJobs() {
-                if (this.searchInput != '') {
-                    console.log("Empty function @ jobs vue. Slated for future implementation.");
-                    //Search Algo
+            loadJobNamesForSearch() {
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/jobs',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'sessionToken': this.token
+                    }
+                }).then((response) => {
+                    for(let i = 0; i < response.data.length; i++) {
+                        //assign two lists where job id and titles ahve matching index
+                        this.assignMenuNames.push(response.data[i].title)
+                        this.assignMenuJobIds.push(response.data[i].jobId)
+                    }
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            },
+            searchJobs(assignValue) {
+                //check list for assigned name. Name and id lists indecies are matched
+                //compare index of searched name and push id page at matching index
+                for (let i = 0; i < this.assignMenuNames.length; i++) {
+                    if (this.assignMenuNames[i] == assignValue) {
+                        router.push('/jobs/'+this.assignMenuJobIds[i])
+                    }
                 }
             },
             loadUserData() {
