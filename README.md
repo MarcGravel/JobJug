@@ -160,24 +160,31 @@ At any time after the invoice has been sent, a manager or admin can go to the jo
 ### Some Mobile Views
 
 Mobile Pop up Menus
+
 ![Mobile-Schedule](./src/assets/readmeScreens/mobileMenu.png)
 
 Schedule View
+
 ![Mobile-Schedule](./src/assets/readmeScreens/mobileSchedule.png)
 
 Job View
+
 ![Mobile-Job](./src/assets/readmeScreens/mobileJobs.png)
 
 Employee View
+
 ![Mobile-Employee](./src/assets/readmeScreens/mobileEmployees.png)
 
 Employee Create Overlay view
+
 ![Mobile-Schedule](./src/assets/readmeScreens/mobileCreate.png)
 
 Changing your password is as simple as clicking your name in the navagation bar
+
 ![Mobile-Schedule](./src/assets/readmeScreens/mobilePassword.png)
 
 A job view with notes and simple complete button
+
 ![Mobile-Schedule](./src/assets/readmeScreens/mobileComplete.png)
 
 
