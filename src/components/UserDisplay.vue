@@ -31,7 +31,7 @@
                             <h3 class="infoTag">Phone:</h3>
                             <h3 class="infoContent">{{employee.phone}}</h3>
                         </div>
-                        <div id="rateBox" class="boxItem" v-if="user.authLevel != 'employee'">
+                        <div id="rateBox" class="boxItem" v-if="user.authLevel != 'employee' || user.userId == employee.userId">
                             <h3 class="infoTag">Hourly Rate:</h3>
                             <h3 class="infoContent">{{employee.hourlyRate}}</h3>
                         </div>
