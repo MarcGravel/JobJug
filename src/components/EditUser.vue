@@ -118,7 +118,7 @@ import cookies from 'vue-cookies'
                     required: v => !!v || 'Role is required',
                 },
                 phoneRules: {
-                    length: v => v.length  <= 20 || 'Max 20 characters'
+                    length: v => (v != null && v.length  <= 20) || 'Max 20 characters'
                 },
                 errorMsg: '',
 

@@ -149,6 +149,16 @@ import router from '../router'
                 this.disableDelete = false;
             }
         },
+        computed: {
+            checkJobNulls() {
+                for (let i = 0; i < this.updJob.length; i++) {
+                    if (this.updJob[i] == null) {
+                        this.updJob[i] == " "
+                    }
+                }
+                return this.updJob
+            }
+        },
         data() {
             return {
                 updJob: {
@@ -168,16 +178,16 @@ import router from '../router'
                     v => v.length  <= 100 || 'Max 100 characters'
                 ],
                 locationRules: [
-                    v => v.length  <= 100 || 'Max 100 characters'
+                    v => (v != null && v.length  <= 100) || 'Max 100 characters'
                 ],
                 schedRules: [
-                    v => v.length  <= 10 || 'Max 10 characters'
+                    v => (v != null && v.length  <= 10) || 'Max 10 characters'
                 ],
                 completedDateRules: [
-                    v => v.length  <= 10 || 'Max 10 characters'
+                    v => (v != null && v.length  <= 10) || 'Max 10 characters'
                 ],
                 clientRules: [
-                    v => v.length  <= 60 || 'Max 60 characters'
+                    v => (v != null && v.length  <= 60) || 'Max 60 characters'
                 ],
                 allEmployees: {
 

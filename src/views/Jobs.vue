@@ -232,7 +232,7 @@ import NavBar from '../components/NavBar.vue'
 import AsideBar from '../components/AsideBar.vue'
 import EditJobs from '../components/EditJobs.vue'
 import CreateJob from '../components/CreateJob.vue'
-import download from 'downloadjs'
+
 
     export default {
         name: "Jobs",
@@ -356,9 +356,21 @@ import download from 'downloadjs'
                         'jobId': this.jobId
                     }
                 }).then((response) => {
-                    console.log(response);
-                    let content = response.headers["content-type"];
-                    download(response.data, "invoice.pdf", content);
+                    //grabs the filename sent in content disposition. must splie actual file name from return string
+                    let fileName = response.headers['content-disposition'].split('filename=')[1].split(';')[0];
+
+                    //create object URL as Blob with response blob
+                    const url = URL.createObjectURL(new Blob([response.data], {type: response.data.type}));
+                    //create hidden a tag
+                    const link = document.createElement('a');
+                    //set href to url const
+                    link.href = url;
+                    //set filename
+                    link.download = fileName;
+                    //activate download file
+                    link.click();
+                    //remove ObjectUrl
+                    URL.revokeObjectURL(link.href)
                 }).catch((error) => {
                     console.log(error.response);
                 })

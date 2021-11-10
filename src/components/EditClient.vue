@@ -75,17 +75,17 @@ import cookies from 'vue-cookies'
                     length: v => v.length  <= 60 || 'Max 60 characters'
                 },
                 companyRules: {
-                    length: v => v.length  <= 100 || 'Max 100 characters'
+                    length: v => (v != null && v.length  <= 100) || 'Max 100 characters'
                 },
                 addressRules: {
-                    length: v => v.length  <= 100 || 'Max 100 characters'
+                    length: v => (v != null && v.length  <= 100) || 'Max 100 characters'
                 },
                 emailRules: {
-                    length: v => v.length  <= 50 || 'Max 50 characters',
+                    length: v => (v != null && v.length  <= 50) || 'Max 50 characters',
                     valid: v => /.+@.+\..+/.test(v) || v == '' || 'E-mail must be valid'
                 },
                 phoneRules: {
-                    length: v => v.length  <= 20 || 'Max 20 characters'
+                    length: v => (v != null && v.length  <= 20) || 'Max 20 characters'
                 },
             }
         },
