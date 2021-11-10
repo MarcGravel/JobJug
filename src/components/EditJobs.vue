@@ -251,8 +251,7 @@ import router from '../router'
                         "jobId": this.job.jobId,
                         "userId": userId
                     }
-                }).then((response) => {
-                    console.log(response);
+                }).then(() => {
                     this.allAssigned.push(employee);
                     this.$emit("updateJobInfo");
                 }).catch((error) => {
@@ -282,8 +281,7 @@ import router from '../router'
                         'Content-Type': 'application/json',
                     },
                     data: this.updJob
-                }).then((response) => {
-                    console.log(response.data[0]);
+                }).then(() => {
                     //remove assignment if client id changed then add new assignment
                     if (this.updJob.clientId != this.job.clientId) {
                         axios.request({
@@ -340,8 +338,7 @@ import router from '../router'
                         "sessionToken": token,
                         "jobId": this.job.jobId,
                     }
-                }).then((response) => {
-                    console.log(response);
+                }).then(() => {
                     this.$emit("updateJobInfo");
                     this.$emit("closeOverlay");
                     router.replace('/jobs')
@@ -372,8 +369,7 @@ import router from '../router'
                         "jobId": this.job.jobId,
                         "userId": userId
                     }
-                }).then((response) => {
-                    console.log(response);
+                }).then(() => {
                     //remove employee from list visually
                     let emp = this.allAssigned.indexOf(employee);
                     if (emp > -1) {

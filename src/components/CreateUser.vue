@@ -153,8 +153,7 @@ import axios from 'axios'
                         "phone": this.newUser.phone,
                         "hourlyRate": this.newUser.hourlyRate
                     }
-                }).then((response) => {
-                    console.log(response.data[0]);
+                }).then(() => {
                     this.$emit("closeOverlay")
                     this.$emit("loadUsers")
                 }).catch((error) => {

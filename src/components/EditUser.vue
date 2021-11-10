@@ -176,12 +176,10 @@ import cookies from 'vue-cookies'
                         'Content-Type': 'application/json',
                     },
                     data: this.updUser
-                }).then((response) => {
-                    console.log(response.data[0]);
+                }).then(() => {
                     this.$emit("closeOverlay")
                     this.$emit("loadUsers")
                 }).catch((error) => {
-                    console.log(error.response.data);
                     if (error.response.data == "email already exists. Try another email") {
                         this.updUser.email = "Email already exists. Try another email"
                     }

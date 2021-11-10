@@ -128,8 +128,7 @@ import cookies from 'vue-cookies'
                         'Content-Type': 'application/json',
                     },
                     data: this.updClient
-                }).then((response) => {
-                    console.log(response.data[0]);
+                }).then(() => {
                     this.$emit("closeOverlay")
                     this.$emit("loadClients")
                 }).catch((error) => {

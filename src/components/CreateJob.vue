@@ -245,8 +245,6 @@ import router from '../router'
                         "clientId": this.newJob.clientId,
                     }
                 }).then((response) => {
-                    console.log(response.data[0]);
-
                     //add assigned employee
                     if (this.assignedEmployee != '') {
                         for (let i = 0; i < this.allEmployees.length; i++) {

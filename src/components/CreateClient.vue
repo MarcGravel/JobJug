@@ -104,8 +104,7 @@ import axios from 'axios'
                         "email": this.newClient.email,
                         "phone": this.newClient.phone
                     }
-                }).then((response) => {
-                    console.log(response.data[0]);
+                }).then(() => {
                     this.$emit("closeOverlay")
                     this.$emit("loadClients")
                 }).catch((error) => {

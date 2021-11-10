@@ -318,8 +318,7 @@ import CreateJob from '../components/CreateJob.vue'
                         "content": this.theJob.content,
                         "chargedAmount": this.theJob.charged
                     }
-                }).then((response) => {
-                    console.log(response.data);
+                }).then(() => {
                     this.invoiceAlert = !this.invoiceAlert
 
                     //update invoiced column in current job to true
@@ -482,8 +481,7 @@ import CreateJob from '../components/CreateJob.vue'
                         "jobId": this.jobId,
                         "notes": this.theJobNotes
                     }
-                }).then((response) => {
-                    console.log(response.data[0]);
+                }).then(() => {
                     this.getJobInfo();
                 }).catch((error) => {
                     console.log(error.response);
