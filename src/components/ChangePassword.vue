@@ -32,25 +32,37 @@
                 </v-list>
                 <v-divider></v-divider>
                 <v-list>
-                <v-form v-model="formValid" v-if="pwdSuccess == false">
+                <v-form ref="form" v-model="formValid" v-if="pwdSuccess == false">
                     <v-list-item>
                         <v-list-item-content>
                             <v-text-field
-                                v-model="newPass"
+                                v-model="oldPass"
                                 :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                 :type="show1 ? 'text' : 'password'"
                                 @click:append="show1 = !show1"
                                 placeholder="At least 6 characters"
                                 :rules="[passwordRules.required, passwordRules.passmin, passwordRules.passmax]"
-                                label="Password"
+                                label="Current Password"
+                            ></v-text-field>
+                            <v-text-field
+                                v-model="newPass"
+                                :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                                :type="show2 ? 'text' : 'password'"
+                                @click:append="show2 = !show2"
+                                placeholder="At least 6 characters"
+                                :rules="[passwordRules.required, passwordRules.passmin, passwordRules.passmax]"
+                                label="New Password"
                             ></v-text-field>
                             <v-text-field
                                 v-model="confirmPass"
-                                :type="show2 ? 'text' : 'password'"
+                                :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
+                                :type="show3 ? 'text' : 'password'"
+                                @click:append="show3 = !show3"
                                 placeholder="Write password again"
                                 :rules="[confirmRules.required, confirmRules.match]"
-                                label="Confirm Password"
+                                label="Confirm New Password"
                             ></v-text-field>
+                            <h2>{{errorMsg}}</h2>
                         </v-list-item-content>
                     </v-list-item>
                 </v-form>
@@ -92,47 +104,52 @@ import axios from 'axios'
                 menu: false,
                 show1: false,
                 show2: false,
+                show3: false,
                 formValid: false,
                 passwordRules: {
                     required: v => !!v || 'Password is required',
-                    passmin: v => v.length >= 6 || 'Min 6 characters',
-                    passmax: v => v.length <= 50 || 'Max 50 characters'
+                    passmin: v => (v != null && v.length) >= 6 || 'Min 6 characters',
+                    passmax: v => (v != null && v.length) <= 50 || 'Max 50 characters'
                 },
                 confirmRules: {
                     required: v => !!v || 'Password is required',
                     match: v => v == this.newPass|| "Password must match"
                 },
+                oldPass: '',
                 newPass: '',
                 confirmPass: '',
-                pwdSuccess: false
+                pwdSuccess: false,
+                errorMsg: '',
             }
         },
         methods: {
             updatePass() {
                 let session = cookies.get('session');
                 let token = session.token;
-                let userId = this.user.userId
 
                 if (this.newPass != '') {
                     if (this.newPass == this.confirmPass) {
                         axios.request({
-                            url: process.env.VUE_APP_API_SITE+'/api/users',
+                            url: process.env.VUE_APP_API_SITE+'/api/password',
                             method: 'PATCH',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
                             data: {
                                 "sessionToken": token,
-                                "userId": userId,
-                                "password": this.newPass,
+                                "password": this.oldPass,
+                                "newPassword": this.newPass,
                             }
                         }).then(() => {
                             this.pwdSuccess = true;
                             this.newPass = '';
+                            this.oldPass = '';
                             this.confirmPass = '';
                             this.callTimeout();
                         }).catch((error) => {
-                            console.log(error.response);
+                            this.errorMsg = error.response.data;
+                            this.$refs.form.reset()
+                            this.$refs.form.resetValidation()
                         })
                     }
                 }
