@@ -5,6 +5,7 @@ import Schedule from '../views/Schedule.vue'
 import Jobs from '../views/Jobs.vue'
 import Users from '../views/Users.vue'
 import Clients from '../views/Clients.vue'
+import NoPage from '../views/NoPage.vue'
 
 Vue.use(VueRouter)
 
@@ -35,6 +36,9 @@ const routes = [
     name: 'Clients',
     component: Clients
   },
+  { path: '/:pathMatch(.*)*',
+    name: "404",
+    component: NoPage },
 ]
 
 const router = new VueRouter({
