@@ -357,13 +357,12 @@ import CreateJob from '../components/CreateJob.vue'
                 }).then((response) => {
                     //grabs the filename sent in content disposition. must split actual file name from return string
                     let fileName = response.headers['content-disposition'].split('filename=')[1].split(';')[0];
-
                     const url = URL.createObjectURL(new Blob([response.data], {type: response.data.type}));
                     const link = document.createElement('a');
                     link.href = url;
                     link.download = fileName;
-                    link.click();
-                    URL.revokeObjectURL(link.href)
+                    window.open(link);
+                    URL.revokeObjectURL(link.href);
                 }).catch((error) => {
                     console.log(error.response);
                 })
