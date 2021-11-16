@@ -115,12 +115,64 @@
                     </h4>
                     <div v-if="theJob.invoiced == 1" id="invoiceContent">
                         <h3 class="infoContent">Yes</h3>
-                        <v-btn
-                            id="viewInvoiceBtn"
-                            @click="sendViewInvoiceFile"
+                        <v-menu
+                            v-model="invMenu"
+                            :close-on-content-click="false"
+                            :max-width="500"
+                            offset-y
                             >
-                            View Invoice
-                        </v-btn>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                id="viewInvoiceBtn"
+                                color="white"
+                                plain
+                                dark
+                                v-bind="attrs"
+                                v-on="on"
+                                @click="viewInvoiceSummary"
+                                >
+                                Invoice Summary
+                                </v-btn>
+                            </template>
+
+                            <v-card id="card">
+                                <v-list>
+                                <v-list-item>
+                                    <v-list-item-content>
+                                    <v-list-item-title><b>Invoice Id:</b> {{invoiceSum.invId}}</v-list-item-title>
+                                    <v-list-item-title><b>Invoice Date:</b> {{invoiceSum.invoiceDate}}</v-list-item-title>
+                                    <v-divider></v-divider>
+                                    <v-list-item-title><b>Subtotal:</b> {{invoiceSum.chargedAmount}}</v-list-item-title>
+                                    <v-list-item-title><b>Tax:</b> {{invoiceSum.tax}}</v-list-item-title>
+                                    <v-list-item-title><b>Total:</b> {{invoiceSum.grandTotal}}</v-list-item-title>
+                                    <v-spacer></v-spacer>
+                                    <v-list-item-title><b>Client:</b> {{invoiceSum.clientName}}</v-list-item-title>
+                                    <v-list-item-title><b>Company:</b> {{invoiceSum.clientCompany}}</v-list-item-title>
+                                    <v-list-item-title><b>Client e-mail:</b> {{invoiceSum.clientEmail}}</v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                </v-list>
+                                <v-divider></v-divider>
+                                <v-list>
+                                </v-list>
+                                <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                    color="error"
+                                    @click="invMenu = false"
+                                >
+                                    Close
+                                </v-btn>
+                                <v-btn
+                                    id="SendCopyInvBtn"
+                                    @click="sendUserInvoiceCopy"
+                                    color="success"
+                                    >
+                                    Email Me A Copy
+                                </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-menu>
                     </div>
                     <div v-else id="noInvoiceContent">
                         <h3 class="infoContent">No</h3>
@@ -300,7 +352,18 @@ import CreateJob from '../components/CreateJob.vue'
                 invoiceAlert: false,
                 assignValue: '',
                 assignMenuNames: [],
-                assignMenuJobIds: []
+                assignMenuJobIds: [],
+                invoiceSum: {
+                    invId: '',
+                    chargedAmount: '',
+                    tax: '',
+                    grandTotal: '',
+                    invoiceDate: '',
+                    clientName: '',
+                    clientCompany: '',
+                    clientEmail: '',
+                },
+                invMenu: false,
             }
         },
         methods: {
@@ -342,6 +405,49 @@ import CreateJob from '../components/CreateJob.vue'
                     console.log(error.response);
                 })
             },
+            viewInvoiceSummary() {
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/invoice',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'sessionToken': this.token
+                    },
+                    params: {
+                        'jobId': this.jobId
+                    }
+                }).then((response) => {
+                    this.invoiceSum.invId = response.data.invId;
+                    this.invoiceSum.chargedAmount = response.data.chargedAmount;
+                    this.invoiceSum.tax = response.data.tax;
+                    this.invoiceSum.grandTotal = response.data.grandTotal;
+                    this.invoiceSum.invoiceDate = response.data.invoiceDate;
+                    this.invoiceSum.clientName = response.data.clientName;
+                    this.invoiceSum.clientCompany = response.data.clientCompany;
+                    this.invoiceSum.clientEmail = response.data.clientEmail;
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            },
+            sendUserInvoiceCopy() {
+                axios.request({
+                    url: process.env.VUE_APP_API_SITE+'/api/invoice',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'sessionToken': this.token
+                    },
+                    params: {
+                        'jobId': this.jobId,
+                        'sendEmail': true
+                    }
+                }).then(() => {
+                    this.invMenu = false;
+                }).catch((error) => {
+                    console.log(error.response);
+                })
+            },
+            // DELETE ONCE COMPLETE
             sendViewInvoiceFile() {
                 axios.request({
                     url: process.env.VUE_APP_API_SITE+'/api/invoice',
