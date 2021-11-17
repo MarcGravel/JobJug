@@ -12,26 +12,6 @@ Backend: Python, Flask, MariaDb // [API repo](https://github.com/MarcGravel/JobJ
 
 Frontend (this repo): Javascript, Vue.js, HTML, CSS, and SASS.
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
 # Usage at Authorization Level
 
 ### Admin Only:
