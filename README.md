@@ -135,7 +135,7 @@ The email contains the attached invoice in PDF format.
 
 ![Invoice-PDF](./src/assets/readmeScreens/jjInvoice.png)
 
-At any time after the invoice has been sent, a manager or admin can go to the job page and click view invoice to receive a PDF copy of that invoice that will automatically start a download through their browser. 
+At any time after the invoice has been sent, a manager or admin can go to the job page and click view invoice to receive a PDF copy sent to them by email. 
 
 ### Some Mobile Views
 
