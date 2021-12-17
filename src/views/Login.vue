@@ -41,6 +41,11 @@
                             Log In
                     </v-btn>
                 </v-form>
+                <div id="test-credentials">
+                    <h3>To log in as a "manager" at a mock company use the credentials below:</h3>
+                    <h4>E-mail: tim@gmail.com</h4>
+                    <h4>Password: burton</h4>
+                </div>
             </div>
             <div id="footer">
                 <PageFooter />
@@ -184,6 +189,19 @@ import router from '../router'
             #errorLogin {
                 h3 {
                     color: #cc0000;
+                }
+            }
+
+            #test-credentials {
+                background-color: #cbf7e1;
+                padding: 1vh 2vw;
+                border-radius: 25px;
+                text-align: center;
+                margin-top: 5vh;
+                color: rgb(255, 7, 7);
+
+                h3 {
+                    margin-bottom: 1vh;
                 }
             }
         }
