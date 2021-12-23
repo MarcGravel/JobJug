@@ -167,6 +167,7 @@ import router from '../router'
             grid-row: 3;
             width: 90%;
             height: 60%;
+            min-height: 250px;
             padding: 5vh 5vw 5vh 5vw;
             border-radius: 50px;
             align-self: start;
@@ -209,6 +210,21 @@ import router from '../router'
         #footer {
             grid-row: 4;
             height: 15vh;
+        }
+    }
+
+    @media screen and (max-height: 570px) {
+        #loginPage { 
+            
+            #slogan {
+            hr {
+                display: none;
+            }
+        }
+
+            #footer {
+                display: none;
+            }
         }
     }
 
