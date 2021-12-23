@@ -42,7 +42,7 @@
                     </v-btn>
                 </v-form>
                 <div id="test-credentials">
-                    <h3>To log in as a "manager" at a mock company use the credentials below:</h3>
+                    <h3>To test app, log in as a "manager" with:</h3>
                     <h4>E-mail: tim@gmail.com</h4>
                     <h4>Password: burton</h4>
                 </div>
@@ -137,7 +137,7 @@ import router from '../router'
         width: 100%;
         height: 100vh;
         display: grid;
-        grid-template-rows: 20vh 10vh 55vh 15vh;
+        grid-template-rows: 20vh 10vh 60vh 10vh;
         align-items: center;
         justify-items: center;
         background-color: #52ab98;
@@ -213,7 +213,7 @@ import router from '../router'
         }
     }
 
-    @media screen and (max-height: 570px) {
+    @media screen and (max-height: 650px) {
         #loginPage { 
             
             #slogan {
