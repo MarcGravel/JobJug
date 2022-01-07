@@ -29,6 +29,7 @@
             height: 15vh;
             max-width: 200px;
             justify-self: end;
+            padding-bottom: 3vh;
         }
 
         h4 {
@@ -39,6 +40,7 @@
             align-self: center;
             font-size: 1.5em;
             font-family: 'Righteous', cursive;
+            padding-bottom: 3vh;
         }
 
         #deskTop {
@@ -63,6 +65,7 @@
 
             #image {
                 display: none;
+                padding-bottom: 0;
             }
 
             #deskTop {
@@ -74,6 +77,7 @@
 
             h4 {
                 align-self: end;
+                padding-bottom: 0;
             }
         }
     }

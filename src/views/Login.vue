@@ -41,11 +41,11 @@
                             Log In
                     </v-btn>
                 </v-form>
-                <div id="test-credentials">
-                    <h3>To test app, log in as a "manager" with:</h3>
-                    <h4>E-mail: tim@gmail.com</h4>
-                    <h4>Password: burton</h4>
-                </div>
+            </div>
+            <div id="test-credentials">
+                <h3>To test app, log in as a "manager" with:</h3>
+                <h4>E-mail: tim@gmail.com</h4>
+                <h4>Password: burton</h4>
             </div>
             <div id="footer">
                 <PageFooter />
@@ -137,20 +137,23 @@ import router from '../router'
         width: 100%;
         height: 100vh;
         display: grid;
-        grid-template-rows: 20vh 10vh 60vh 10vh;
+        grid-template-rows: 20vh 10vh 30vh 30vh 10vh;
         align-items: center;
         justify-items: center;
         background-color: #52ab98;
+        overflow: hidden;
 
         #title {
             font-family: 'Righteous', cursive;
             font-size: 5em;
             color: #2b6777;
+            z-index: 3;
         }
 
         #slogan {
             display: grid;
             justify-items: center;
+            z-index: 3;
 
             h2 {
                 font-family: 'Raleway', sans-serif;
@@ -165,12 +168,14 @@ import router from '../router'
 
         #formContainer {
             grid-row: 3;
-            width: 90%;
+            width: 95%;
             height: 60%;
             min-height: 250px;
             padding: 5vh 5vw 5vh 5vw;
             border-radius: 50px;
             align-self: start;
+            background-color: #52ab98;
+            z-index: 2;
 
             #loginForm {   
                 width: 100%;
@@ -192,24 +197,36 @@ import router from '../router'
                     color: #cc0000;
                 }
             }
+        }
 
-            #test-credentials {
-                background-color: #cbf7e1;
-                padding: 1vh 2vw;
-                border-radius: 25px;
-                text-align: center;
-                margin-top: 5vh;
-                color: rgb(255, 7, 7);
+        #test-credentials {
+            background-color: #cbf7e1;
+            padding: 1vh 2vw;
+            width: 95%;
+            border-radius: 25px;
+            text-align: center;
+            margin-top: 5vh;
+            color: rgb(255, 7, 7);
+            grid-row: 4;
 
-                h3 {
-                    margin-bottom: 1vh;
-                }
+            h3 {
+                margin-bottom: 1vh;
             }
         }
 
         #footer {
-            grid-row: 4;
-            height: 15vh;
+            grid-row: 5;
+            height: 10vh;
+        }
+    }
+
+    @media screen and (max-height: 490px) {
+        #loginPage { 
+            
+            #slogan {
+                position: relative;
+                top: 8vh;
+            }
         }
     }
 
@@ -217,10 +234,10 @@ import router from '../router'
         #loginPage { 
             
             #slogan {
-            hr {
-                display: none;
+                hr {
+                    display: none;
+                }
             }
-        }
 
             #footer {
                 display: none;
@@ -242,6 +259,10 @@ import router from '../router'
             #formContainer {
                 width: 70%;
             }
+
+            #test-credentials {
+                width: 50%;
+            }
         }
     }
 
@@ -259,6 +280,7 @@ import router from '../router'
 
             #formContainer {
                 width: 50%;
+                background-color: #f5fffd;
 
                 #loginForm {
 
@@ -266,6 +288,11 @@ import router from '../router'
                         padding: 0 5vw 0 5vw;
                     }
                 }
+            }
+
+            #test-credentials {
+                width: 30%;
+                max-width: 700px;
             }
         }
     }
